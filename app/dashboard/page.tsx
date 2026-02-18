@@ -44,17 +44,18 @@ export default function Dashboard() {
         .select('*')
         .eq('email', session.user.email)
         .single()
-
-      if (userData) {
-        setUser(userData)
-      } else {
-        // Se não encontrar na tabela, usa dados do auth
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          tipo: 'aluno' // Default
-        })
-      }
+if (userData) {
+  console.log('✅ Usuário encontrado na tabela:', userData)
+  setUser(userData)
+} else {
+  console.log('❌ Usuário NÃO encontrado na tabela usuarios')
+  console.log('Email buscado:', session.user.email)
+  setUser({
+    id: session.user.id,
+    email: session.user.email || '',
+    tipo: 'aluno' // Default
+  })
+}
     } catch (error) {
       console.error('Erro ao verificar usuário:', error)
     }
