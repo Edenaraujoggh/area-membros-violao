@@ -109,7 +109,10 @@ if (userData) {
           </div>
           
           <div className="flex items-center gap-4">
-            <span className="text-gray-300 text-sm hidden sm:block">{user?.email}</span>
+            <span className="text-gray-300 text-sm hidden sm:block">
+  {user?.email}
+  <span className="text-red-500 text-xs ml-2">({user?.tipo || 'sem tipo'})</span>
+</span>
             
             {isAdmin && (
               <button
