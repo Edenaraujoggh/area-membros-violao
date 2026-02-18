@@ -29,37 +29,46 @@ export default function Dashboard() {
     fetchCursos()
   }, [])
 
-  async function checkUser() {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session) {
-        router.push('/login')
-        return
-      }
-
-      // Buscar dados do usuário na tabela usuarios
-      const { data: userData } = await supabase
-        .from('usuarios')
-        .select('*')
-        .eq('email', session.user.email)
-        .single()
-if (userData) {
-  console.log('✅ Usuário encontrado na tabela:', userData)
-  setUser(userData)
-} else {
-  console.log('❌ Usuário NÃO encontrado na tabela usuarios')
-  console.log('Email buscado:', session.user.email)
-  setUser({
-    id: session.user.id,
-    email: session.user.email || '',
-    tipo: 'aluno' // Default
-  })
-}
-    } catch (error) {
-      console.error('Erro ao verificar usuário:', error)
+ async function checkUser() {
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    
+    if (!session) {
+      router.push('/login')
+      return
     }
+
+    console.log('🔍 Session encontrada:', session.user.email)
+
+    // Buscar dados do usuário na tabela usuarios
+    const { data: userData, error: userError } = await supabase
+      .from('usuarios')
+      .select('*')
+      .eq('email', session.user.email)
+      .single()
+    
+    if (userError) {
+      console.error('❌ ERRO na query:', userError)
+      alert('Erro ao buscar usuário: ' + userError.message)
+    }
+
+    if (userData) {
+      console.log('✅ Usuário encontrado:', userData)
+      setUser(userData)
+    } else {
+      console.log('❌ Usuário não encontrado para:', session.user.email)
+      setUser({
+        id: session.user.id,
+        email: session.user.email || '',
+        tipo: 'aluno'
+      })
+    }
+  } catch (error) {
+    console.error('❌ Erro geral:', error)
+    alert('Erro geral: ' + error)
   }
+}
+  
 
   async function fetchCursos() {
     try {
