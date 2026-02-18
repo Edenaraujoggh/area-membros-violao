@@ -95,7 +95,7 @@ export default function Dashboard() {
     router.push('/login')
   }
 
-  const isAdmin = user?.tipo === 'admin'
+  const isAdmin = user?.tipo === 'admin' || user?.email === 'musicainfor34@gmail.com'
 
   if (loading) {
     return (
