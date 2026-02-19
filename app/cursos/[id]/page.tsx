@@ -134,7 +134,7 @@ const [enviandoComentario, setEnviandoComentario] = useState(false)
       if (data && data.length > 0) {
         setAulas(data)
         setAulaAtual(data[0])
-        setProgresso(0)
+      
       } else {
         setAulas([])
         setAulaAtual(null)
