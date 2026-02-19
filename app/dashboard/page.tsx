@@ -15,6 +15,7 @@ interface Curso {
   titulo: string
   descricao: string
   created_at: string
+    imagem_capa?: string
 }
 
 interface User {
@@ -87,8 +88,9 @@ export default function Dashboard() {
         console.error('Erro ao buscar cursos:', error)
         return
       }
-
-      setCursos(data || [])
+setCursos(data || [])
+console.log('Cursos do banco:', data)  // ADICIONAR ISSO
+    
     } catch (error) {
       console.error('Erro:', error)
     } finally {
@@ -264,16 +266,26 @@ export default function Dashboard() {
                        cursor-pointer h-full"
             onClick={() => router.push(`/cursos/${curso.id}`)}
           >
-            {/* Capa */}
-            <div className="h-48 overflow-hidden relative">
-              <div className="h-full bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center 
-                              transform transition-transform duration-500 group-hover:scale-110">
-                <BookOpen className="w-16 h-16 text-white/30" />
-              </div>
-              <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white font-medium">
-                {new Date(curso.created_at).toLocaleDateString('pt-BR')}
-              </div>
-            </div>
+         {/* Capa com Imagem */}
+<div className="h-48 overflow-hidden relative">
+  {curso.imagem_capa ? (
+    <img 
+      src={curso.imagem_capa} 
+      alt={curso.titulo}
+      className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+    />
+  ) : (
+    <div className="h-full bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center 
+                    transform transition-transform duration-500 group-hover:scale-110">
+      <BookOpen className="w-16 h-16 text-white/30" />
+    </div>
+  )}
+  <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white font-medium">
+    {new Date(curso.created_at).toLocaleDateString('pt-BR')}
+  </div>
+  {/* Overlay gradiente */}
+  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent pointer-events-none" />
+</div>
             
             {/* Conteúdo */}
             <div className="p-6">
