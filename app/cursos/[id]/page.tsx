@@ -86,6 +86,7 @@ export default function CursoPage() {
   const [loadingMateriais, setLoadingMateriais] = useState(false)
   const [baixandoId, setBaixandoId] = useState<string | null>(null)
   const [progresso, setProgresso] = useState(0)
+  const [aulasConcluidas, setAulasConcluidas] = useState<string[]>([])
 const [comentarios, setComentarios] = useState<Comentario[]>([])
 const [novoComentario, setNovoComentario] = useState('')
 const [carregandoComentarios, setCarregandoComentarios] = useState(false)
@@ -94,6 +95,11 @@ const [enviandoComentario, setEnviandoComentario] = useState(false)
     fetchCurso()
     fetchAulas()
   }, [cursoId])
+  useEffect(() => {
+  if (aulas.length > 0) {
+    fetchProgresso()
+  }
+}, [aulas])
 
   useEffect(() => {
     if (aulaAtual?.id) {
@@ -139,6 +145,32 @@ const [enviandoComentario, setEnviandoComentario] = useState(false)
       setLoading(false)
     }
   }
+
+async function fetchProgresso() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    const { data, error } = await supabase
+      .from('progresso_aulas')
+      .select('aula_id')
+      .eq('user_id', user.id)
+      .eq('curso_id', cursoId)
+
+    if (data) {
+      const aulasConcluidasIds = data.map(item => item.aula_id)
+      setAulasConcluidas(aulasConcluidasIds)
+      
+      // Calcula progresso
+      if (aulas.length > 0) {
+        const percentual = Math.round((aulasConcluidasIds.length / aulas.length) * 100)
+        setProgresso(percentual)
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao buscar progresso:', error)
+  }
+}
 
   async function fetchMateriais(aulaId: string) {
     setLoadingMateriais(true)
@@ -257,8 +289,54 @@ async function enviarComentario(e: React.FormEvent) {
     setAulaAtual(aula)
   }
 
-  function toggleAulaConcluida(aulaId: string) {
-    alert(`Aula ${aulaId} marcada como concluída!`)
+  async function toggleAulaConcluida(aulaId: string) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        alert('Você precisa estar logado')
+        return
+      }
+
+      const jaConcluida = aulasConcluidas.includes(aulaId)
+
+      if (jaConcluida) {
+        // Desmarcar aula
+        const { error } = await supabase
+          .from('progresso_aulas')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('aula_id', aulaId)
+
+        if (error) throw error
+
+        setAulasConcluidas(prev => prev.filter(id => id !== aulaId))
+        setProgresso(prev => {
+          const novoProgresso = Math.max(0, prev - Math.round(100 / aulas.length))
+          return novoProgresso
+        })
+      } else {
+        // Marcar aula como concluída
+        const { error } = await supabase
+          .from('progresso_aulas')
+          .insert({
+            user_id: user.id,
+            aula_id: aulaId,
+            curso_id: cursoId,
+            concluida: true
+          })
+
+        if (error) throw error
+
+        setAulasConcluidas(prev => [...prev, aulaId])
+        setProgresso(prev => {
+          const novoProgresso = Math.min(100, prev + Math.round(100 / aulas.length))
+          return novoProgresso
+        })
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar progresso:', error)
+      alert('Erro ao salvar progresso')
+    }
   }
 
   function formatarDuracao(segundos?: number) {
@@ -369,12 +447,25 @@ function baixarMaterial(material: Material) {
                   </div>
                 </div>
                 <button
-                  onClick={() => aulaAtual && toggleAulaConcluida(aulaAtual.id)}
-                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
-                >
-                  <CheckCircle className="w-5 h-5" />
-                  Marcar como concluída
-                </button>
+  onClick={() => aulaAtual && toggleAulaConcluida(aulaAtual.id)}
+  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+    aulaAtual && aulasConcluidas.includes(aulaAtual.id)
+      ? 'bg-green-600 hover:bg-green-700 text-white'
+      : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+  }`}
+>
+  {aulaAtual && aulasConcluidas.includes(aulaAtual.id) ? (
+    <>
+      <CheckCircle className="w-5 h-5" />
+      Aula concluída ✓
+    </>
+  ) : (
+    <>
+      <Circle className="w-5 h-5" />
+      Marcar como concluída
+    </>
+  )}
+</button>
               </div>
               
               <p className="text-gray-300 leading-relaxed mb-6">
@@ -560,35 +651,42 @@ function baixarMaterial(material: Material) {
               </div>
               
               <div className="divide-y divide-gray-700 max-h-[600px] overflow-y-auto">
-                {aulas.map((aula, index) => (
-                  <button
-                    key={aula.id}
-                    onClick={() => selecionarAula(aula)}
-                    className={`w-full p-4 flex items-start gap-3 text-left transition-colors hover:bg-gray-750 ${
-                      aulaAtual?.id === aula.id ? 'bg-gray-750 border-l-4 border-orange-500' : 'border-l-4 border-transparent'
-                    }`}
-                  >
-                    <div className="mt-1">
-                      {aulaAtual?.id === aula.id ? (
-                        <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
-                          <Play className="w-3 h-3 text-white ml-0.5" />
-                        </div>
-                      ) : (
-                        <Circle className="w-6 h-6 text-gray-500" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <h4 className={`font-medium text-sm ${
-                        aulaAtual?.id === aula.id ? 'text-orange-400' : 'text-gray-300'
-                      }`}>
-                        {index + 1}. {aula.titulo}
-                      </h4>
-                      <span className="text-xs text-gray-500 mt-1 block">
-                        {formatarDuracao(aula.duracao_segundos)}
-                      </span>
-                    </div>
-                  </button>
-                ))}
+                {aulas.map((aula, index) => {
+  const concluida = aulasConcluidas.includes(aula.id)
+  return (
+  <button
+    key={aula.id}
+    onClick={() => selecionarAula(aula)}
+    className={`w-full p-4 flex items-start gap-3 text-left transition-colors hover:bg-gray-750 ${
+      aulaAtual?.id === aula.id ? 'bg-gray-750 border-l-4 border-orange-500' : 'border-l-4 border-transparent'
+    }`}
+  >
+    <div className="mt-1">
+      {concluida ? (
+        <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+          <CheckCircle className="w-4 h-4 text-white" />
+        </div>
+      ) : aulaAtual?.id === aula.id ? (
+        <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
+          <Play className="w-3 h-3 text-white ml-0.5" />
+        </div>
+      ) : (
+        <Circle className="w-6 h-6 text-gray-500" />
+      )}
+    </div>
+    <div className="flex-1">
+      <h4 className={`font-medium text-sm ${
+        aulaAtual?.id === aula.id ? 'text-orange-400' : 'text-gray-300'
+      }`}>
+        {index + 1}. {aula.titulo}
+      </h4>
+      <span className="text-xs text-gray-500 mt-1 block">
+        {formatarDuracao(aula.duracao_segundos)}
+      </span>
+    </div>
+  </button>
+  )
+})}
               </div>
             </div>
 
