@@ -45,11 +45,12 @@ export default function Dashboard() {
       .from('usuarios')
       .select('*')
       .eq('email', session.user.email)
-      .single()
+      .maybeSingle()
     
     if (userError) {
       console.error('❌ ERRO na query:', userError)
       alert('Erro ao buscar usuário: ' + userError.message)
+      return
     }
 
     if (userData) {
@@ -213,7 +214,12 @@ export default function Dashboard() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {cursos.map((curso) => (
-              <div key={curso.id} className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all">
+              <div 
+  key={curso.id} 
+  className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 
+             transform transition-all duration-300 ease-out 
+             hover:scale-105 hover:border-orange-500 hover:shadow-2xl hover:shadow-orange-500/20"
+>
                 {/* Capa */}
                 <div className="h-48 bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center relative">
                   <BookOpen className="w-16 h-16 text-white/30" />
