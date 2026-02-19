@@ -28,11 +28,11 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { titulo, descricao } = body
+    const { titulo, descricao, imagem_capa } = body
 
     const { data, error } = await supabase
       .from('cursos')
-      .insert([{ titulo, descricao }])
+      .insert([{ titulo, descricao, imagem_capa }])
       .select()
 
     if (error) {

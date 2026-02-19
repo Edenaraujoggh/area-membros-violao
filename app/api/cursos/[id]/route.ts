@@ -41,11 +41,11 @@ export async function PUT(
   try {
     const { id } = params
     const body = await request.json()
-    const { titulo, descricao } = body
+    const { titulo, descricao, imagem_capa } = body
 
     const { data, error } = await supabase
       .from('cursos')
-      .update({ titulo, descricao })
+     .update({ titulo, descricao, imagem_capa })
       .eq('id', id)
       .select()
 
