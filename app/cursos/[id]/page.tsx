@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { Play, CheckCircle, Circle, ChevronLeft, BookOpen, Clock, FileText, Download, Paperclip, Loader2, MessageCircle, Send } from 'lucide-react'
+import { Play, CheckCircle, Circle, ChevronLeft, BookOpen, Clock, FileText, Download, Paperclip, Loader2, MessageCircle, Send, Pause} from 'lucide-react'
 
 interface Aula {
   id: string
@@ -91,6 +91,9 @@ const [comentarios, setComentarios] = useState<Comentario[]>([])
 const [novoComentario, setNovoComentario] = useState('')
 const [carregandoComentarios, setCarregandoComentarios] = useState(false)
 const [enviandoComentario, setEnviandoComentario] = useState(false)
+const [tempoPratica, setTempoPratica] = useState(0)
+const [timerAtivo, setTimerAtivo] = useState(false)
+const [tempoTotalSalvo, setTempoTotalSalvo] = useState(0)
   useEffect(() => {
     fetchCurso()
     fetchAulas()
@@ -101,12 +104,28 @@ const [enviandoComentario, setEnviandoComentario] = useState(false)
   }
 }, [aulas])
 
-  useEffect(() => {
-    if (aulaAtual?.id) {
-      fetchMateriais(aulaAtual.id)
-      buscarComentarios()
-    }
-  }, [aulaAtual?.id])
+ useEffect(() => {
+  if (aulaAtual?.id) {
+    fetchMateriais(aulaAtual.id)
+    buscarComentarios()
+    buscarTempoPratica(aulaAtual.id)
+    setTempoPratica(0) // reseta contador atual
+    setTimerAtivo(false) // para timer ao trocar aula
+  }
+}, [aulaAtual?.id])
+
+// Timer de prática - conta quando ativo
+useEffect(() => {
+  let interval: NodeJS.Timeout
+  
+  if (timerAtivo && aulaAtual) {
+    interval = setInterval(() => {
+      setTempoPratica(prev => prev + 1)
+    }, 1000)
+  }
+  
+  return () => clearInterval(interval)
+}, [timerAtivo, aulaAtual])
 
   async function fetchCurso() {
     const { data, error } = await supabase
@@ -171,6 +190,70 @@ async function fetchProgresso() {
     console.error('Erro ao buscar progresso:', error)
   }
 }
+async function buscarTempoPratica(aulaId: string) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    const { data, error } = await supabase
+      .from('registro_pratica')
+      .select('tempo_segundos')
+      .eq('user_id', user.id)
+      .eq('aula_id', aulaId)
+      .single()
+
+    if (data) {
+      setTempoTotalSalvo(data.tempo_segundos || 0)
+    } else {
+      setTempoTotalSalvo(0)
+    }
+  } catch (error) {
+    console.error('Erro ao buscar tempo:', error)
+    setTempoTotalSalvo(0)
+  }
+}
+
+async function salvarTempoPratica() {
+  if (!aulaAtual) return
+  
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    const tempoTotal = tempoTotalSalvo + tempoPratica
+
+    const { error } = await supabase
+      .from('registro_pratica')
+      .upsert({
+        user_id: user.id,
+        aula_id: aulaAtual.id,
+        curso_id: cursoId,
+        tempo_segundos: tempoTotal
+      }, {
+        onConflict: 'user_id,aula_id'
+      })
+
+    if (error) throw error
+    
+    setTempoTotalSalvo(tempoTotal)
+    setTempoPratica(0)
+    console.log('Tempo salvo:', tempoTotal)
+  } catch (error) {
+    console.error('Erro ao salvar tempo:', error)
+  }
+}
+
+function formatarTempo(segundos: number) {
+  const horas = Math.floor(segundos / 3600)
+  const min = Math.floor((segundos % 3600) / 60)
+  const sec = segundos % 60
+  
+  if (horas > 0) {
+    return `${horas}h ${min}min ${sec}s`
+  }
+  return `${min}min ${sec}s`
+}
+
 
   async function fetchMateriais(aulaId: string) {
     setLoadingMateriais(true)
@@ -444,8 +527,40 @@ function baixarMaterial(material: Material) {
                       {formatarDuracao(aulaAtual?.duracao_segundos)}
                     </span>
                     <span>Aula {aulaAtual?.ordem} de {aulas.length}</span>
-                  </div>
+           {(tempoTotalSalvo > 0 || tempoPratica > 0) && (
+  <span className="flex items-center gap-1 text-blue-400 font-medium">
+    <Clock className="w-4 h-4" />
+    Praticado: {formatarTempo(tempoTotalSalvo + tempoPratica)}
+  </span>
+)}
+                  </div>         
                 </div>
+                {/* Botão Timer de Prática */}
+<button
+  onClick={() => {
+    if (timerAtivo) {
+      salvarTempoPratica()
+    }
+    setTimerAtivo(!timerAtivo)
+  }}
+  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+    timerAtivo 
+      ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse' 
+      : 'bg-blue-600 hover:bg-blue-700 text-white'
+  }`}
+>
+  {timerAtivo ? (
+    <>
+      <Pause className="w-4 h-4" />
+      Pausar ({formatarTempo(tempoPratica)})
+    </>
+  ) : (
+    <>
+      <Play className="w-4 h-4" />
+      Praticar {tempoTotalSalvo > 0 && `(${formatarTempo(tempoTotalSalvo)})`}
+    </>
+  )}
+</button>
                 <button
   onClick={() => aulaAtual && toggleAulaConcluida(aulaAtual.id)}
   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
