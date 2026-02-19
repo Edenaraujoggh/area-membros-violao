@@ -3,7 +3,12 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { BookOpen, Clock, Award, Settings, LogOut } from 'lucide-react'
+import { BookOpen, Clock, Award, Settings, LogOut, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation, Pagination, Autoplay } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 
 interface Curso {
   id: string
@@ -195,82 +200,136 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Cursos */}
-        <h3 className="text-xl font-bold mb-6">Seus Cursos</h3>
-        
-        {cursos.length === 0 ? (
-          <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
-            <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400 mb-4">Nenhum curso disponível ainda.</p>
-            {isAdmin && (
-              <button
-                onClick={() => router.push('/admin')}
-                className="text-orange-500 hover:text-orange-400 font-medium"
-              >
-                Ir para Admin e criar cursos →
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cursos.map((curso) => (
-              <div 
-  key={curso.id} 
-  className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 
-             transform transition-all duration-300 ease-out 
-             hover:scale-105 hover:border-orange-500 hover:shadow-2xl hover:shadow-orange-500/20"
->
-                {/* Capa */}
-                <div className="h-48 bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center relative">
-                  <BookOpen className="w-16 h-16 text-white/30" />
-                  <div className="absolute top-4 right-4 bg-black/30 px-2 py-1 rounded text-xs text-white">
-                    {new Date(curso.created_at).toLocaleDateString('pt-BR')}
-                  </div>
-                </div>
-                
-                {/* Conteúdo */}
-                <div className="p-6">
-                  <h4 className="text-xl font-bold mb-2">{curso.titulo}</h4>
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                    {curso.descricao || 'Sem descrição'}
-                  </p>
-                  
-                  {/* Progresso mockado */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="text-gray-400">Progresso</span>
-                      <span className="text-orange-500 font-bold">0%</span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div className="bg-orange-500 h-2 rounded-full w-0"></div>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">0 de 0 aulas completadas</p>
-                  </div>
-                  
-                  {/* BOTÕES */}
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => router.push(`/cursos/${curso.id}`)}
-                      className="w-full bg-gray-700 hover:bg-gray-600 text-white font-medium py-3 rounded-lg transition-colors"
-                    >
-                      Começar curso
-                    </button>
-                    
-                    {isAdmin && (
-                      <button
-                        onClick={() => router.push(`/admin/cursos/${curso.id}/aulas`)}
-                        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
-                      >
-                        <Settings className="w-4 h-4" />
-                        Gerenciar Aulas
-                      </button>
-                    )}
-                  </div>
-                </div>
+      {/* Cursos - Carrossel Estilo Kiwify */}
+<div className="mb-8">
+  <div className="flex items-center justify-between mb-6">
+    <h3 className="text-xl font-bold">Seus Cursos</h3>
+    <div className="flex gap-2">
+      <button className="swiper-button-prev-custom w-10 h-10 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center hover:bg-orange-600 hover:border-orange-500 transition-all disabled:opacity-50">
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+      <button className="swiper-button-next-custom w-10 h-10 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center hover:bg-orange-600 hover:border-orange-500 transition-all disabled:opacity-50">
+        <ChevronRight className="w-5 h-5" />
+      </button>
+    </div>
+  </div>
+  
+  {cursos.length === 0 ? (
+    <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
+      <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+      <p className="text-gray-400 mb-4">Nenhum curso disponível ainda.</p>
+      {isAdmin && (
+        <button
+          onClick={() => router.push('/admin')}
+          className="text-orange-500 hover:text-orange-400 font-medium"
+        >
+          Ir para Admin e criar cursos →
+        </button>
+      )}
+    </div>
+  ) : (
+    <Swiper
+      modules={[Navigation, Pagination, Autoplay]}
+      spaceBetween={20}
+      slidesPerView={1}
+      navigation={{
+        prevEl: '.swiper-button-prev-custom',
+        nextEl: '.swiper-button-next-custom',
+      }}
+      pagination={{ clickable: true, dynamicBullets: true }}
+      autoplay={{ delay: 5000, disableOnInteraction: false }}
+      breakpoints={{
+        640: {
+          slidesPerView: 1,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 24,
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 24,
+        },
+      }}
+      className="!pb-12"
+    >
+      {cursos.map((curso) => (
+        <SwiperSlide key={curso.id}>
+          <div 
+            className="group bg-gray-800 rounded-xl overflow-hidden border border-gray-700 
+                       transform transition-all duration-300 ease-out 
+                       hover:scale-105 hover:border-orange-500 
+                       hover:shadow-2xl hover:shadow-orange-500/20 
+                       cursor-pointer h-full"
+            onClick={() => router.push(`/cursos/${curso.id}`)}
+          >
+            {/* Capa */}
+            <div className="h-48 overflow-hidden relative">
+              <div className="h-full bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center 
+                              transform transition-transform duration-500 group-hover:scale-110">
+                <BookOpen className="w-16 h-16 text-white/30" />
               </div>
-            ))}
+              <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white font-medium">
+                {new Date(curso.created_at).toLocaleDateString('pt-BR')}
+              </div>
+            </div>
+            
+            {/* Conteúdo */}
+            <div className="p-6">
+              <h4 className="text-xl font-bold mb-2 group-hover:text-orange-400 transition-colors">
+                {curso.titulo}
+              </h4>
+              <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                {curso.descricao || 'Sem descrição'}
+              </p>
+              
+              {/* Progresso */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between text-sm mb-1">
+                  <span className="text-gray-400">Progresso</span>
+                  <span className="text-orange-500 font-bold">0%</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+                  <div className="bg-orange-500 h-2 rounded-full w-0 transition-all duration-1000"></div>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">0 de 0 aulas completadas</p>
+              </div>
+              
+              {/* Botões */}
+              <div className="space-y-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    router.push(`/cursos/${curso.id}`)
+                  }}
+                  className="w-full bg-gray-700 group-hover:bg-orange-600 text-white font-medium py-3 rounded-lg 
+                           transition-all duration-300"
+                >
+                  Começar curso
+                </button>
+                
+                {isAdmin && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      router.push(`/admin/cursos/${curso.id}/aulas`)
+                    }}
+                    className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg 
+                             transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Gerenciar Aulas
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
-        )}
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  )}
+</div>
       </main>
     </div>
   )
