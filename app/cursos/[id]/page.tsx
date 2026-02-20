@@ -420,7 +420,7 @@ async function enviarComentario(e: React.FormEvent) {
       console.error('Erro ao atualizar progresso:', error)
       alert('Erro ao salvar progresso')
     }
-  }
+  
 
   function formatarDuracao(segundos?: number) {
     if (!segundos) return '00:00'
@@ -456,7 +456,7 @@ if (loading) {
   )
 }
 
-return 
+return (
     <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden">
       <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-auto sm:h-16 flex flex-col sm:flex-row items-center justify-between py-2 sm:py-0">
