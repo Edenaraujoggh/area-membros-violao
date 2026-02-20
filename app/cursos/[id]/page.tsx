@@ -535,69 +535,75 @@ function baixarMaterial(material: Material) {
 )}
                   </div>         
                 </div>
-                {/* Botão Timer de Prática */}
-<button
-  onClick={() => {
-    if (timerAtivo) {
-      salvarTempoPratica()
-    }
-    setTimerAtivo(!timerAtivo)
-  }}
-  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-    timerAtivo 
-      ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse' 
-      : 'bg-blue-600 hover:bg-blue-700 text-white'
-  }`}
->
-  {timerAtivo ? (
-    <>
-      <Pause className="w-4 h-4" />
-      Pausar ({formatarTempo(tempoPratica)})
-    </>
-  ) : (
-    <>
-      <Play className="w-4 h-4" />
-      Praticar {tempoTotalSalvo > 0 && `(${formatarTempo(tempoTotalSalvo)})`}
-    </>
-  )}
-</button>
-                <button
-  onClick={() => aulaAtual && toggleAulaConcluida(aulaAtual.id)}
-  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-    aulaAtual && aulasConcluidas.includes(aulaAtual.id)
-      ? 'bg-green-600 hover:bg-green-700 text-white'
-      : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
-  }`}
->
-  {aulaAtual && aulasConcluidas.includes(aulaAtual.id) ? (
-    <>
-      <CheckCircle className="w-5 h-5" />
-      Aula concluída ✓
-    </>
-  ) : (
-    <>
-      <Circle className="w-5 h-5" />
-      Marcar como concluída
-    </>
-  )}
-</button>
-              </div>
-              
-              <p className="text-gray-300 leading-relaxed mb-6">
-                {aulaAtual?.descricao}
-              </p>
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  {/* Botão Timer de Prática */}
+                  <button
+                    onClick={() => {
+                      if (timerAtivo) {
+                        salvarTempoPratica()
+                      }
+                      setTimerAtivo(!timerAtivo)
+                    }}
+                    className={`flex items-center justify-center gap-1 sm:gap-2 px-3 py-2 rounded-lg transition-colors text-sm sm:text-base ${
+                      timerAtivo 
+                        ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse' 
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    }`}
+                  >
+                    {timerAtivo ? (
+                      <>
+                        <Pause className="w-4 h-4" />
+                        <span>Pausar</span>
+                        <span className="hidden sm:inline">({formatarTempo(tempoPratica)})</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-4 h-4" />
+                        <span>Praticar</span>
+                        {tempoTotalSalvo > 0 && <span className="hidden sm:inline">({formatarTempo(tempoTotalSalvo)})</span>}
+                      </>
+                    )}
+                  </button>
 
-              {/* SEÇÃO DE MATERIAIS DE APOIO */}
-              <div className="border-t border-gray-700 pt-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Paperclip className="w-5 h-5 text-orange-500" />
-                  <h3 className="text-lg font-bold text-white">Materiais de Apoio</h3>
-                  {materiais.length > 0 && (
-                    <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
-                      {materiais.length}
-                    </span>
-                  )}
+                  {/* Botão Concluir Aula - Menor no mobile */}
+                  <button
+                    onClick={() => aulaAtual && toggleAulaConcluida(aulaAtual.id)}
+                    className={`flex items-center justify-center gap-1 sm:gap-2 px-3 py-2 rounded-lg transition-colors text-sm sm:text-base ${
+                      aulaAtual && aulasConcluidas.includes(aulaAtual.id)
+                        ? 'bg-green-600 hover:bg-green-700 text-white'
+                        : 'bg-gray-700 hover:bg-gray-600 text-gray-300'
+                    }`}
+                  >
+                    {aulaAtual && aulasConcluidas.includes(aulaAtual.id) ? (
+                      <>
+                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span>Concluída</span>
+                      </>
+                    ) : (
+                      <>
+                        <Circle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span className="hidden sm:inline">Marcar como concluída</span>
+                        <span className="sm:hidden">Concluir</span>
+                      </>
+                    )}
+                  </button>
                 </div>
+              
+                <p className="text-gray-300 leading-relaxed mb-6">
+                  {aulaAtual?.descricao}
+                </p>
+
+                {/* SEÇÃO DE MATERIAIS DE APOIO */}
+                <div className="border-t border-gray-700 pt-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Paperclip className="w-5 h-5 text-orange-500" />
+                    <h3 className="text-lg font-bold text-white">Materiais de Apoio</h3>
+                    {materiais.length > 0 && (
+                      <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                        {materiais.length}
+                      </span>
+                    )}
+                  </div>
 
                 {loadingMateriais ? (
                   <div className="flex items-center gap-2 text-gray-400 py-4">
