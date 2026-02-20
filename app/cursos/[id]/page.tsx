@@ -455,9 +455,9 @@ function baixarMaterial(material: Material) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden">
       <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-auto sm:h-16 flex flex-col sm:flex-row items-center justify-between py-2 sm:py-0">
           <div className="flex items-center gap-4">
             <button 
               onClick={() => router.push('/dashboard')}
@@ -481,7 +481,7 @@ function baixarMaterial(material: Material) {
             <div className="text-right">
               <p className="text-sm text-gray-400">Seu progresso</p>
               <div className="flex items-center gap-2">
-                <div className="w-32 bg-gray-700 rounded-full h-2">
+                <div className="w-24 sm:w-32 bg-gray-700 rounded-full h-2">
                   <div 
                     className="bg-orange-500 h-2 rounded-full transition-all"
                     style={{ width: `${progresso}%` }}
