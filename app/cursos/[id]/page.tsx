@@ -143,7 +143,7 @@ useEffect(() => {
         .from('aulas')
         .select('*')
         .eq('curso_id', cursoId)
-        .order('ordem', { ascending: true })
+        .order('created_at', { ascending: true })
 
       if (error) {
         console.error('Erro ao buscar aulas:', error)
