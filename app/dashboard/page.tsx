@@ -82,7 +82,7 @@ export default function Dashboard() {
       const { data, error } = await supabase
         .from('cursos')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('created_at', { ascending: true })
 
       if (error) {
         console.error('Erro ao buscar cursos:', error)
