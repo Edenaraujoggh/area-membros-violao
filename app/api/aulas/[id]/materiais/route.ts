@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
+// POR ISSO:
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!  // <-- Service Role Key
 )
 
 // GET - Listar materiais da aula
@@ -25,7 +26,7 @@ export async function GET(
       materiais.map(async (material) => {
         const { data: urlData } = await supabase
           .storage
-          .from('materiais')
+          .from('MATERIAIS')
           .createSignedUrl(material.arquivo_path, 3600)
         
         return {
@@ -50,6 +51,8 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
+     console.log('======== POST INICIADO ========')
+  console.log('Params ID:', params.id)
     const formData = await request.formData()
     const file = formData.get('file') as File
     const nome = formData.get('nome') as string
@@ -64,10 +67,14 @@ export async function POST(
     
     const { data: uploadData, error: uploadError } = await supabase
       .storage
-      .from('materiais')
+      .from('MATERIAIS')
       .upload(fileName, file)
 
-    if (uploadError) throw uploadError
+   if (uploadError) {
+  console.error('UPLOAD ERROR:', uploadError)
+  throw uploadError
+}
+console.log('Upload sucesso no storage:', uploadData)
 
     // Salvar referência no banco
     const { data: material, error: dbError } = await supabase
@@ -82,15 +89,23 @@ export async function POST(
       .select()
       .single()
 
-    if (dbError) throw dbError
+    if (dbError) {
+  console.error('DATABASE ERROR:', dbError)
+  throw dbError
+}
+console.log('Dados salvos no banco:', material)
 
     return NextResponse.json({ material }, { status: 201 })
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Erro ao fazer upload' }, 
-      { status: 500 }
-    )
-  }
+  } catch (error: any) {
+  console.error('======== ERRO NO UPLOAD ========')
+  console.error(error)
+  console.error('================================')
+  
+  return NextResponse.json(
+    { error: 'Erro ao fazer upload' }, 
+    { status: 500 }
+  )
+}
 }
 
 // DELETE - Remover material
@@ -115,7 +130,7 @@ export async function DELETE(
 
     if (material) {
       // Deletar do Storage
-      await supabase.storage.from('materiais').remove([material.arquivo_path])
+      await supabase.storage.from('MATERIAIS').remove([material.arquivo_path])
     }
 
     // Deletar do banco

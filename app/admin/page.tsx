@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 import { Plus, Edit, Trash, BookOpen } from 'lucide-react'
+
+// NOVO: Cliente Supabase para upload
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 interface Curso {
   id: string
@@ -28,6 +34,11 @@ export default function AdminCursos() {
     status: 'ativo'
   })
 
+  // NOVO: Estados para upload de imagem
+  const [imagemCapa, setImagemCapa] = useState<File | null>(null)
+  const [previewImagem, setPreviewImagem] = useState<string>('')
+  const [uploading, setUploading] = useState(false)
+
   useEffect(() => {
     fetchCursos()
   }, [])
@@ -45,21 +56,66 @@ export default function AdminCursos() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    if (editingCurso) {
-      await supabase
-        .from('cursos')
-        .update(formData)
-        .eq('id', editingCurso.id)
-    } else {
-      await supabase
-        .from('cursos')
-        .insert([formData])
-    }
+    try {
+      console.log('Iniciando salvamento do curso...')
+      // NOVO: Upload da imagem primeiro (se tiver nova imagem)
+      let imagemUrl = formData.imagem_url
+      
+      if (imagemCapa) {
+        setUploading(true)
+        const fileExt = imagemCapa.name.split('.').pop()
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+        const filePath = `capas/${fileName}`
+        console.log('Tentando fazer upload para:', filePath)
 
-    setShowForm(false)
-    setEditingCurso(null)
-    setFormData({ titulo: '', descricao: '', imagem_url: '', status: 'ativo' })
-    fetchCursos()
+        const { error: uploadError } = await supabase.storage
+         .from('IMAGENS-CURSOS')
+          .upload(filePath, imagemCapa)
+
+              if (uploadError) {
+        console.error('ERRO NO UPLOAD:', uploadError)
+        alert('Erro ao fazer upload da imagem: ' + uploadError.message)
+        setUploading(false)
+        return
+      }
+      console.log('Upload feito com sucesso!')
+
+        const { data: { publicUrl } } = supabase.storage
+           .from('IMAGENS-CURSOS')
+          .getPublicUrl(filePath)
+
+        imagemUrl = publicUrl
+        setUploading(false)
+      }
+
+      const dadosParaSalvar = {
+        ...formData,
+        imagem_url: imagemUrl
+      }
+
+      if (editingCurso) {
+        await supabase
+          .from('cursos')
+          .update(dadosParaSalvar)
+          .eq('id', editingCurso.id)
+      } else {
+        await supabase
+          .from('cursos')
+          .insert([dadosParaSalvar])
+      }
+
+      setShowForm(false)
+      setEditingCurso(null)
+      setFormData({ titulo: '', descricao: '', imagem_url: '', status: 'ativo' })
+      // NOVO: Limpar estados da imagem
+      setImagemCapa(null)
+      setPreviewImagem('')
+      fetchCursos()
+  } catch (error: any) {
+  console.error('ERRO GERAL:', error)
+  alert('Erro ao salvar curso: ' + (error?.message || 'Erro desconhecido'))
+  setUploading(false)
+}
   }
 
   async function deleteCurso(id: string) {
@@ -77,7 +133,19 @@ export default function AdminCursos() {
       imagem_url: curso.imagem_url || '',
       status: curso.status
     })
+    // NOVO: Carregar imagem existente no preview
+    setPreviewImagem(curso.imagem_url || '')
+    setImagemCapa(null)
     setShowForm(true)
+  }
+
+  function handleCancel() {
+    setShowForm(false)
+    setEditingCurso(null)
+    setFormData({ titulo: '', descricao: '', imagem_url: '', status: 'ativo' })
+    // NOVO: Limpar imagem ao cancelar
+    setImagemCapa(null)
+    setPreviewImagem('')
   }
 
   if (loading) {
@@ -103,6 +171,9 @@ export default function AdminCursos() {
               setShowForm(!showForm)
               setEditingCurso(null)
               setFormData({ titulo: '', descricao: '', imagem_url: '', status: 'ativo' })
+              // NOVO: Limpar imagem ao criar novo
+              setImagemCapa(null)
+              setPreviewImagem('')
             }}
             className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg transition-colors"
           >
@@ -146,17 +217,41 @@ export default function AdminCursos() {
                 />
               </div>
 
+              {/* NOVO: Campo de Upload de Imagem (substituiu o URL) */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
-                  URL da Imagem/Thumbnail
+                  Imagem de Capa
                 </label>
+                
+                {/* Preview da imagem */}
+                {previewImagem && (
+                  <div className="mb-3">
+                    <img 
+                      src={previewImagem} 
+                      alt="Preview" 
+                      className="w-48 h-32 object-cover rounded-lg border border-gray-600"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">
+                      {imagemCapa ? 'Nova imagem selecionada' : 'Imagem atual'}
+                    </p>
+                  </div>
+                )}
+                
                 <input
-                  type="url"
-                  value={formData.imagem_url}
-                  onChange={(e) => setFormData({...formData, imagem_url: e.target.value})}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-orange-500"
-                  placeholder="https://exemplo.com/imagem.jpg"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) {
+                      setImagemCapa(file)
+                      setPreviewImagem(URL.createObjectURL(file))
+                    }
+                  }}
+                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-orange-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-500 file:text-white hover:file:bg-orange-600"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Clique para selecionar uma imagem do seu computador
+                </p>
               </div>
 
               <div>
@@ -177,18 +272,30 @@ export default function AdminCursos() {
               <div className="flex gap-3 pt-4">
                 <button
                   type="submit"
-                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg transition-colors"
+                  disabled={uploading}
+                  className={`flex items-center gap-2 px-6 py-2 rounded-lg transition-colors ${
+                    uploading 
+                      ? 'bg-green-600/50 cursor-not-allowed' 
+                      : 'bg-green-600 hover:bg-green-700'
+                  }`}
                 >
-                  {editingCurso ? 'Atualizar' : 'Salvar'} Curso
+                  {uploading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Enviando...
+                    </>
+                  ) : (
+                    `${editingCurso ? 'Atualizar' : 'Salvar'} Curso`
+                  )}
                 </button>
                 
                 {editingCurso && (
                   <button
                     type="button"
-                    onClick={() => {
-                      setShowForm(false)
-                      setEditingCurso(null)
-                    }}
+                    onClick={handleCancel}
                     className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg transition-colors"
                   >
                     Cancelar
@@ -218,9 +325,18 @@ export default function AdminCursos() {
                   className="p-4 hover:bg-gray-750 transition-colors flex items-center justify-between"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="bg-gradient-to-br from-orange-500 to-red-600 w-16 h-16 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                      <BookOpen className="w-8 h-8" />
-                    </div>
+                    {/* NOVO: Mostra a imagem do curso ou ícone padrão */}
+                    {curso.imagem_url ? (
+                      <img 
+                        src={curso.imagem_url} 
+                        alt={curso.titulo}
+                        className="w-16 h-16 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div className="bg-gradient-to-br from-orange-500 to-red-600 w-16 h-16 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                        <BookOpen className="w-8 h-8" />
+                      </div>
+                    )}
                     <div>
                       <h4 className="font-medium text-white text-lg">{curso.titulo}</h4>
                       <p className="text-sm text-gray-400 line-clamp-1">{curso.descricao}</p>

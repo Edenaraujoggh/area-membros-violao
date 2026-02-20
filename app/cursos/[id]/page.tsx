@@ -262,7 +262,7 @@ function formatarTempo(segundos: number) {
         .from('materiais')
         .select('*')
         .eq('aula_id', aulaId)
-        .order('created_a', { ascending: false })
+        .order('created_at', { ascending: false })
 
       if (error) {
         console.error('Erro ao buscar materiais:', error)

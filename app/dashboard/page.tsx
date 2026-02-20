@@ -15,7 +15,7 @@ interface Curso {
   titulo: string
   descricao: string
   created_at: string
-    imagem_capa?: string
+    imagem_url?: string
 }
 
 interface User {
@@ -268,9 +268,9 @@ console.log('Cursos do banco:', data)  // ADICIONAR ISSO
           >
          {/* Capa com Imagem */}
 <div className="h-48 overflow-hidden relative">
-  {curso.imagem_capa ? (
+  {curso.imagem_url ? (
     <img 
-      src={curso.imagem_capa} 
+      src={curso.imagem_url}
       alt={curso.titulo}
       className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
     />
