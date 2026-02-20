@@ -440,21 +440,23 @@ function baixarMaterial(material: Material) {
   } catch (error) {
     console.error('Erro:', error)
     setBaixandoId(null)
-    // Fallback: tenta abrir direto (não vai funcionar sem URL completa, mas é segurança)
+   // Fallback: tenta abrir direto (não vai funcionar sem URL completa, mas é segurança)
     alert('Erro ao baixar arquivo')
   }
 }
-  
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500"></div>
-      </div>
-    )
-  }
+// ← Apenas UMA chave } fecha a função handleDownload
+// ← Remova as chaves extras que estavam aqui!
 
+if (loading) {
   return (
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500"></div>
+    </div>
+  )
+}
+
+return (
     <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden">
       <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-auto sm:h-16 flex flex-col sm:flex-row items-center justify-between py-2 sm:py-0">
