@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { BookOpen, Clock, Award, Settings, LogOut, ChevronLeft, ChevronRight, Play, Download } from 'lucide-react'
+import Afinador from '@/components/Afinador'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
 import 'swiper/css'
@@ -30,6 +31,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [progressosCursos, setProgressosCursos] = useState<Record<string, number>>({})
+  const [mostrarAfinador, setMostrarAfinador] = useState(false)
 
   // ✅ MOVAR PARA CÁ: Lógica do curso em andamento (disponível para todo o componente)
   const cursoEmAndamento = cursos.length > 0 
@@ -242,6 +244,7 @@ export default function Dashboard() {
           </button>
 
           {/* 2. Dicionário de Acordes */}
+
           <a 
             href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo"
             target="_blank"
@@ -259,6 +262,21 @@ export default function Dashboard() {
               </p>
             </div>
           </a>
+                    {/* 3. Afinador Digital */}
+          <button 
+            onClick={() => setMostrarAfinador(true)}
+            className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-6 rounded-xl transition-all duration-300 text-left group flex items-center gap-4"
+          >
+            <div className="bg-purple-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
+              <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-white font-bold text-lg">Afinador Digital</h3>
+              <p className="text-gray-400 text-sm mt-1">Afine seu violão antes de praticar</p>
+            </div>
+          </button>
         </div>
 
         {/* Cursos - Carrossel */}
@@ -403,7 +421,8 @@ export default function Dashboard() {
             </Swiper>
           )}
         </div>
-      </main>
+              {mostrarAfinador && <Afinador onClose={() => setMostrarAfinador(false)} />}
+    </main>
     </div>
   )
 }
