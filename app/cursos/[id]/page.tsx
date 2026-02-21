@@ -513,7 +513,7 @@ function baixarMaterial(material: Material) {
             <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
               {aulaAtual?.video_url ? (
                 <iframe
-                  src={getYoutubeEmbedUrl(aulaAtual.video_url)}
+                  src={getVideoEmbedUrl(aulaAtual.video_url)}
                   title={aulaAtual.titulo}
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
