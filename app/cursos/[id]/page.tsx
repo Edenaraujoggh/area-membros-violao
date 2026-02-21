@@ -440,7 +440,7 @@ function baixarMaterial(material: Material) {
     // Gera URL pública permanente (bucket já é público)
     const { data } = supabase
       .storage
-      .from('MATARIAIS')
+      .from('MATERIAIS')
       .getPublicUrl(material.arquivo_path)
     
     // Abre em nova aba para download/visualização
