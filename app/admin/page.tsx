@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
-import { Plus, Edit, Trash, BookOpen } from 'lucide-react'
+import { Plus, Edit, Trash, BookOpen, ChevronLeft } from 'lucide-react'
 
 // NOVO: Cliente Supabase para upload
 const supabase = createClient(
@@ -159,27 +159,38 @@ export default function AdminCursos() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Gerenciar Cursos</h1>
-            <p className="text-gray-400 mt-1">Administração dos cursos da plataforma</p>
-          </div>
-          
+              {/* Header */}
+        <div className="mb-8">
+          {/* Botão Voltar */}
           <button
-            onClick={() => {
-              setShowForm(!showForm)
-              setEditingCurso(null)
-              setFormData({ titulo: '', descricao: '', imagem_url: '', status: 'ativo' })
-              // NOVO: Limpar imagem ao criar novo
-              setImagemCapa(null)
-              setPreviewImagem('')
-            }}
-            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg transition-colors"
+            onClick={() => router.push('/dashboard')}
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4 group"
           >
-            <Plus className="w-5 h-5" />
-            {showForm ? 'Cancelar' : 'Novo Curso'}
+            <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span>Voltar ao Dashboard</span>
           </button>
+          
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">Gerenciar Cursos</h1>
+              <p className="text-gray-400 mt-1">Administração dos cursos da plataforma</p>
+            </div>
+            
+            <button
+              onClick={() => {
+                setShowForm(!showForm)
+                setEditingCurso(null)
+                setFormData({ titulo: '', descricao: '', imagem_url: '', status: 'ativo' })
+                // NOVO: Limpar imagem ao criar novo
+                setImagemCapa(null)
+                setPreviewImagem('')
+              }}
+              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-lg transition-colors"
+            >
+              <Plus className="w-5 h-5" />
+              {showForm ? 'Cancelar' : 'Novo Curso'}
+            </button>
+          </div>
         </div>
 
         {/* Formulário */}
