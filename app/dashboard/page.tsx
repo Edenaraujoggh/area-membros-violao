@@ -29,7 +29,7 @@ export default function Dashboard() {
   const [cursos, setCursos] = useState<Curso[]>([])
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-
+const [progressosCursos, setProgressosCursos] = useState<Record<string, number>>({})
   useEffect(() => {
     checkUser()
     fetchCursos()
@@ -76,7 +76,39 @@ export default function Dashboard() {
   }
 }
   
+async function fetchProgressosCursos(cursosIds: string[]) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
 
+    const progressos: Record<string, number> = {}
+
+    for (const cursoId of cursosIds) {
+      const { count: totalAulas } = await supabase
+        .from('aulas')
+        .select('*', { count: 'exact', head: true })
+        .eq('curso_id', cursoId)
+
+      const { data: concluidas } = await supabase
+        .from('progresso_aulas')
+        .select('aula_id')
+        .eq('user_id', user.id)
+        .eq('curso_id', cursoId)
+
+      if (totalAulas && totalAulas > 0) {
+        const qtdConcluidas = concluidas?.length || 0
+        const percentual = Math.round((qtdConcluidas / totalAulas) * 100)
+        progressos[cursoId] = percentual
+      } else {
+        progressos[cursoId] = 0
+      }
+    }
+
+    setProgressosCursos(progressos)
+  } catch (error) {
+    console.error('Erro ao buscar progressos:', error)
+  }
+}
   async function fetchCursos() {
     try {
       const { data, error } = await supabase
@@ -89,6 +121,9 @@ export default function Dashboard() {
         return
       }
 setCursos(data || [])
+if (data && data.length > 0) {
+  await fetchProgressosCursos(data.map((c: any) => c.id))
+}
 console.log('Cursos do banco:', data)  // ADICIONAR ISSO
     
     } catch (error) {
