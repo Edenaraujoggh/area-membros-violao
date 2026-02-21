@@ -41,7 +41,7 @@ export default function Afinador({ onClose }: { onClose: () => void }) {
     }
     rms = Math.sqrt(rms / SIZE)
 
-    if (rms < 0.01) return -1
+    if (rms < 0.005) return -1  // Capta sons mais fracos/quietos
 
     let r1 = 0, r2 = SIZE - 1, thres = 0.2
     for (let i = 0; i < SIZE / 2; i++) {
@@ -108,7 +108,7 @@ export default function Afinador({ onClose }: { onClose: () => void }) {
       audioContextRef.current = audioContext
       
       const analyser = audioContext.createAnalyser()
-      analyser.fftSize = 2048
+      analyser.fftSize = 4096  // Maior precisão na detecção
       analyserRef.current = analyser
       
       const microphone = audioContext.createMediaStreamSource(stream)
