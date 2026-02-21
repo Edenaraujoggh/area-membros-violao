@@ -335,10 +335,13 @@ console.log('Cursos do banco:', data)  // ADICIONAR ISSO
               <div className="mb-4">
                 <div className="flex items-center justify-between text-sm mb-1">
                   <span className="text-gray-400">Progresso</span>
-                  <span className="text-orange-500 font-bold">0%</span>
+                  <span className="text-orange-500 font-bold">{progressosCursos[curso.id] || 0}%</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
-                  <div className="bg-orange-500 h-2 rounded-full w-0 transition-all duration-1000"></div>
+                  <div 
+  className="bg-orange-500 h-2 rounded-full transition-all duration-1000" 
+  style={{ width: `${progressosCursos[curso.id] || 0}%` }}
+></div>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">0 de 0 aulas completadas</p>
               </div>
