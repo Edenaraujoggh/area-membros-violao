@@ -204,7 +204,7 @@ console.log('Cursos do banco:', data)  // ADICIONAR ISSO
   {/* 1. Continue de onde parou */}
   <button 
     onClick={() => {
-      const cursoEmAndamento = cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0) || cursos[0]
+      const cursoEmAndamento = cursos.find(c => (progressosCursos[c.id] || 0) > 0) || cursos[0]
       if (cursoEmAndamento) {
         router.push(`/cursos/${cursoEmAndamento.id}`)
       }
@@ -220,13 +220,16 @@ console.log('Cursos do banco:', data)  // ADICIONAR ISSO
         <div className="w-full bg-gray-700 rounded-full h-2">
           <div 
             className="bg-orange-500 h-2 rounded-full transition-all"
-            style={{ 
-              width: `${(cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0) && progressosCursos[cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0)?.id!]?.percentual) || 0}%` 
-            }}
+           style={{
+  width: `${progressosCursos[cursoEmAndamento?.id] || 0}%`
+}}
           />
         </div>
         <p className="text-orange-400 text-sm mt-1">
-          {(cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0) && progressosCursos[cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0)?.id!]?.percentual) || 0}% completo
+          {(() => {
+  const curso = cursos.find(c => (progressosCursos[c.id] || 0) > 0) || cursos[0]
+  return `${progressosCursos[curso?.id] || 0}% completo`
+})()}
         </p>
       </div>
     </div>
