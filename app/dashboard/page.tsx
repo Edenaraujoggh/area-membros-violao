@@ -32,7 +32,13 @@ export default function Dashboard() {
   const [progressosCursos, setProgressosCursos] = useState<Record<string, number>>({})
 
   // ✅ MOVAR PARA CÁ: Lógica do curso em andamento (disponível para todo o componente)
-  const cursoEmAndamento = cursos.find(c => (progressosCursos[c.id] || 0) > 0) || cursos[0]
+  const cursoEmAndamento = cursos.length > 0 
+  ? cursos.reduce((prev, current) => {
+      const prevProgress = progressosCursos[prev.id] || 0
+      const currProgress = progressosCursos[current.id] || 0
+      return currProgress > prevProgress ? current : prev
+    })
+  : null
   const progressoAtual = cursoEmAndamento ? (progressosCursos[cursoEmAndamento.id] || 0) : 0
 
   useEffect(() => {
