@@ -25,6 +25,7 @@ export default function Afinador({ onClose }: { onClose: () => void }) {
   const [frequencia, setFrequencia] = useState<number>(0)
   const [diferenca, setDiferenca] = useState<number>(0)
   const [cordaMaisProxima, setCordaMaisProxima] = useState<Corda | null>(null)
+  const [ultimasFreqs, setUltimasFreqs] = useState<number[]>([])
   
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
