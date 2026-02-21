@@ -41,19 +41,23 @@ interface Comentario {
   }
 }
 
-// Função para transformar URL do YouTube em URL de embed
-function getYoutubeEmbedUrl(url: string) {
+// Função para transformar URL do YouTube ou Vimeo em URL de embed
+function getVideoEmbedUrl(url: string) {
   if (!url) return ''
   
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/
-  const match = url.match(regExp)
-  
-  const videoId = (match && match[2].length === 11) ? match[2] : null
-  
-  if (videoId) {
-    return `https://www.youtube.com/embed/${videoId}`
+  // YouTube (vários formatos)
+  const youtubeMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^&\n?#]+)/)
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}?rel=0&modestbranding=1&showinfo=0`
   }
   
+  // Vimeo
+  const vimeoMatch = url.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/)
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}?title=0&byline=0&portrait=0&badge=0&autopause=0`
+  }
+  
+  // Se não for nenhum dos dois, retorna a URL original
   return url
 }
 
