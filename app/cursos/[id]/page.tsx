@@ -432,21 +432,27 @@ export default function CursoPage() {
     return `${min}:${sec}`
   }
 
-  // FUNÇÃO DE DOWNLOAD CORRIGIDA - Gera URL assinada do Supabase
-  function baixarMaterial(material: Material) {
-    try {
-      setBaixandoId(material.id)
-      // Agora envia o arquivo_path em vez de url
-      const downloadUrl = `/api/download?path=${encodeURIComponent(material.arquivo_path)}&name=${encodeURIComponent(material.nome)}`
-      window.open(downloadUrl, '_blank')
-      setTimeout(() => setBaixandoId(null), 1000)
-    } catch (error) {
-      console.error('Erro:', error)
-      setBaixandoId(null)
-      // Fallback: tenta abrir direto (não vai funcionar sem URL completa, mas é segurança)
-      alert('Erro ao baixar arquivo')
-    }
+  // FUNÇÃO DE DOWNLOAD CORRIGIDA - Usa URL pública do bucket (não expira)
+function baixarMaterial(material: Material) {
+  try {
+    setBaixandoId(material.id)
+    
+    // Gera URL pública permanente (bucket já é público)
+    const { data } = supabase
+      .storage
+      .from('MATARIAIS')
+      .getPublicUrl(material.arquivo_path)
+    
+    // Abre em nova aba para download/visualização
+    window.open(data.publicUrl, '_blank')
+    
+    setTimeout(() => setBaixandoId(null), 1000)
+  } catch (error) {
+    console.error('Erro:', error)
+    setBaixandoId(null)
+    alert('Erro ao abrir arquivo')
   }
+}
 
   if (loading) {
     return (
