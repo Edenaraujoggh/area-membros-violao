@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { BookOpen, Clock, Award, Settings, LogOut, ChevronLeft, ChevronRight } from 'lucide-react'
+import { BookOpen, Clock, Award, Settings, LogOut, ChevronLeft, ChevronRight, Play, Download } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
 import 'swiper/css'
@@ -198,44 +198,60 @@ console.log('Cursos do banco:', data)  // ADICIONAR ISSO
           </p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">Cursos em andamento</p>
-                <p className="text-3xl font-bold text-orange-500">{cursos.length}</p>
-              </div>
-              <div className="bg-orange-500/20 p-3 rounded-lg">
-                <BookOpen className="w-6 h-6 text-orange-500" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">Aulas assistidas</p>
-                <p className="text-3xl font-bold text-green-500">0</p>
-              </div>
-              <div className="bg-green-500/20 p-3 rounded-lg">
-                <Clock className="w-6 h-6 text-green-500" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm">Total de cursos</p>
-                <p className="text-3xl font-bold text-blue-500">{cursos.length}</p>
-              </div>
-              <div className="bg-blue-500/20 p-3 rounded-lg">
-                <Award className="w-6 h-6 text-blue-500" />
-              </div>
-            </div>
-          </div>
+       {/* Botões de Ação */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+  
+  {/* 1. Continue de onde parou */}
+  <button 
+    onClick={() => {
+      const cursoEmAndamento = cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0) || cursos[0]
+      if (cursoEmAndamento) {
+        router.push(`/cursos/${cursoEmAndamento.id}`)
+      }
+    }}
+    className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-6 rounded-xl transition-all duration-300 text-left group flex items-center gap-4"
+  >
+    <div className="bg-orange-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
+      <Play className="w-6 h-6 text-orange-500" fill="currentColor" />
+    </div>
+    <div className="flex-1">
+      <h3 className="text-white font-bold text-lg">Continue de onde parou</h3>
+      <div className="mt-2">
+        <div className="w-full bg-gray-700 rounded-full h-2">
+          <div 
+            className="bg-orange-500 h-2 rounded-full transition-all"
+            style={{ 
+              width: `${(cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0) && progressosCursos[cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0)?.id!]?.percentual) || 0}%` 
+            }}
+          />
         </div>
+        <p className="text-orange-400 text-sm mt-1">
+          {(cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0) && progressosCursos[cursos.find(c => (progressosCursos[c.id]?.percentual || 0) > 0)?.id!]?.percentual) || 0}% completo
+        </p>
+      </div>
+    </div>
+  </button>
+
+  {/* 2. Dicionário de Acordes - Download do Drive */}
+  <a 
+    href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-6 rounded-xl transition-all duration-300 text-left group flex items-center gap-4 block"
+  >
+    <div className="bg-green-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
+      <BookOpen className="w-6 h-6 text-green-500" />
+    </div>
+    <div>
+      <h3 className="text-white font-bold text-lg">Dicionário de Acordes</h3>
+      <p className="text-gray-400 text-sm mt-1 flex items-center gap-2">
+        <Download className="w-4 h-4" />
+        Baixar apostila (PDF)
+      </p>
+    </div>
+  </a>
+
+</div>
 
       {/* Cursos - Carrossel Estilo Kiwify */}
 <div className="mb-8">
