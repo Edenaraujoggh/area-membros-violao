@@ -8,8 +8,10 @@ import Afinador from '@/app/components/Afinador'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
 import 'swiper/css'
+import Metronomo from '@/app/components/Metronomo'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
+
 
 interface Curso {
   id: string
@@ -277,6 +279,10 @@ export default function Dashboard() {
               <p className="text-gray-400 text-sm mt-1">Afine seu violão antes de praticar</p>
             </div>
           </button>
+               {/* 4. Metrônomo */}
+          <Metronomo />
+          
+      
         </div>
 
         {/* Cursos - Carrossel */}
