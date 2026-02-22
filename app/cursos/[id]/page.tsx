@@ -525,6 +525,42 @@ function baixarMaterial(material: Material) {
                 </div>
               )}
             </div>
+{/* Navegação entre Aulas */}
+<div className="flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg my-4 border border-gray-700">
+  <button
+    onClick={() => {
+      const idx = aulas.findIndex(a => a.id === aulaAtual?.id)
+      if (idx > 0) {
+        setAulaAtual(aulas[idx - 1])
+        setTempoPratica(0)
+        setTimerAtivo(false)
+      }
+    }}
+    disabled={aulas.findIndex(a => a.id === aulaAtual?.id) === 0}
+    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-700 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-colors"
+  >
+    ← Anterior
+  </button>
+  
+  <span className="text-orange-500 font-bold">
+    {aulas.findIndex(a => a.id === aulaAtual?.id) + 1} / {aulas.length}
+  </span>
+  
+  <button
+    onClick={() => {
+      const idx = aulas.findIndex(a => a.id === aulaAtual?.id)
+      if (idx < aulas.length - 1) {
+        setAulaAtual(aulas[idx + 1])
+        setTempoPratica(0)
+        setTimerAtivo(false)
+      }
+    }}
+    disabled={aulas.findIndex(a => a.id === aulaAtual?.id) === aulas.length - 1}
+    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-500 transition-colors"
+  >
+    Próxima →
+  </button>
+</div>
 
             {/* Informações da Aula */}
             <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
