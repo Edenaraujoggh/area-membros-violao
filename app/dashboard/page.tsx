@@ -204,7 +204,8 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         </div>
       </header>
 
-              {/* 🏆 Ranking Compacto Lateral + Conteúdo Principal */}
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* 🏆 Ranking Compacto Lateral + Conteúdo Principal */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
           
           {/* Coluna 1: Ranking Compacto (Ouro, Prata, Bronze) */}
@@ -345,7 +346,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
           </button>
         </div>
 
-        {/* Cursos - Carrossel (VOLTANDO AO NORMAL) */}
+        {/* Cursos - Carrossel */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold">Seus Cursos</h3>
@@ -421,7 +422,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
               
         {mostrarAfinador && <Afinador onClose={() => setMostrarAfinador(false)} />}
         {mostrarMetronomo && <Metronomo onClose={() => setMostrarMetronomo(false)} />}         
-    </main>
+      </main>
     </div>
   )
 }
