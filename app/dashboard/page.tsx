@@ -232,7 +232,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="/aluno-ouro.jpg" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                           <div className="absolute inset-0 flex items-center justify-center text-yellow-500/50 bg-gray-800/50">
                             <Crown className="w-7 h-7" />
                           </div>
