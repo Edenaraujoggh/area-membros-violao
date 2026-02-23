@@ -1,5 +1,5 @@
 'use client'
-
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules'
 import { Trophy, Crown, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -204,75 +204,141 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         </div>
       </header>
 
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* 🏆 Ranking Compacto Lateral + Conteúdo Principal */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Linha 1: Ranking Automático (Esquerda) + Continue de onde parou (Direita) */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
           
-          {/* Coluna 1: Ranking Compacto (Ouro, Prata, Bronze) */}
-          <div className="lg:col-span-1 space-y-3">
-            
-            {/* 🥇 Ouro */}
-            <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-lg p-3 flex items-center gap-3 hover:border-yellow-400 transition-all">
-              <div className="relative shrink-0">
-                <div className="w-12 h-12 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800">
-                  <img src="/aluno-ouro.jpg" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                  <div className="absolute inset-0 flex items-center justify-center text-yellow-500">
-                    <Crown className="w-6 h-6" />
+          {/* 🏆 Coluna Esquerda: Carrossel Automático do Ranking (Ouro/Prata/Bronze) */}
+          <div className="lg:col-span-1">
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-xl p-1 h-[180px] relative overflow-hidden">
+              <Swiper
+                modules={[Autoplay, EffectFade]}
+                effect="fade"
+                autoplay={{ delay: 3000, disableOnInteraction: false }}
+                loop={true}
+                className="h-full rounded-lg"
+              >
+                {/* 🥇 Ouro */}
+                <SwiperSlide>
+                  <div className="bg-gradient-to-br from-yellow-500/20 via-yellow-600/20 to-orange-500/20 border border-yellow-500/50 rounded-lg p-4 h-full flex flex-col items-center justify-center relative overflow-hidden group">
+                    {/* Efeito pulsante */}
+                    <div className="absolute inset-0 bg-yellow-400/10 animate-pulse"></div>
+                    <div className="absolute top-2 right-2 bg-yellow-500 text-gray-900 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                      <Trophy className="w-3 h-3" fill="currentColor" /> 1º
+                    </div>
+                    
+                    <div className="relative z-10 flex items-center gap-3">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg shadow-yellow-500/30">
+                          <img src="/aluno-ouro.jpg" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <div className="absolute inset-0 flex items-center justify-center text-yellow-500/50">
+                            <Crown className="w-8 h-8" />
+                          </div>
+                        </div>
+                        {/* Troféu flutuante ao lado da foto */}
+                        <div className="absolute -bottom-1 -right-3 bg-yellow-500 rounded-full p-1.5 shadow-lg shadow-yellow-500/50 animate-bounce">
+                          <Trophy className="w-4 h-4 text-gray-900" fill="currentColor" />
+                        </div>
+                      </div>
+                      
+                      <div className="text-left">
+                        <div className="text-yellow-400 text-xs font-bold flex items-center gap-1 mb-1">
+                          <Crown className="w-3 h-3" fill="currentColor" /> OURO
+                        </div>
+                        <p className="text-white font-bold text-sm leading-tight">Maria Silva</p>
+                        <p className="text-yellow-500/80 text-xs mt-1">52 horas</p>
+                      </div>
+                    </div>
+                    
+                    {/* Barra de progresso decorativa */}
+                    <div className="w-full mt-3 bg-gray-700/50 rounded-full h-1.5 overflow-hidden">
+                      <div className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full rounded-full animate-pulse" style={{width: '92%'}}></div>
+                    </div>
                   </div>
-                </div>
-                <div className="absolute -top-1 -right-1 bg-yellow-500 text-gray-900 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">1</div>
-              </div>
-              <div className="min-w-0">
-                <div className="text-yellow-400 text-[10px] font-bold flex items-center gap-1">
-                  <Trophy className="w-3 h-3" /> OURO
-                </div>
-                <p className="text-white font-bold text-sm truncate">Maria Silva</p>
-                <p className="text-gray-400 text-xs">52h</p>
-              </div>
-            </div>
+                </SwiperSlide>
 
-            {/* 🥈 Prata */}
-            <div className="bg-gradient-to-r from-gray-400/10 to-gray-500/10 border border-gray-400/30 rounded-lg p-3 flex items-center gap-3 hover:border-gray-300 transition-all">
-              <div className="relative shrink-0">
-                <div className="w-12 h-12 rounded-full border-2 border-gray-400 overflow-hidden bg-gray-800">
-                  <img src="/aluno-prata.jpg" alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                    <Award className="w-6 h-6" />
+                {/* 🥈 Prata */}
+                <SwiperSlide>
+                  <div className="bg-gradient-to-br from-gray-400/20 via-gray-500/20 to-gray-600/20 border border-gray-400/50 rounded-lg p-4 h-full flex flex-col items-center justify-center relative overflow-hidden">
+                    <div className="absolute top-2 right-2 bg-gray-400 text-gray-900 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                      <Award className="w-3 h-3" fill="currentColor" /> 2º
+                    </div>
+                    
+                    <div className="relative z-10 flex items-center gap-3">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-full border-2 border-gray-400 overflow-hidden bg-gray-800 shadow-lg shadow-gray-400/30">
+                          <img src="/aluno-prata.jpg" alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <div className="absolute inset-0 flex items-center justify-center text-gray-400/50">
+                            <Award className="w-8 h-8" />
+                          </div>
+                        </div>
+                        <div className="absolute -bottom-1 -right-3 bg-gray-400 rounded-full p-1.5 shadow-lg shadow-gray-400/50">
+                          <Award className="w-4 h-4 text-gray-900" fill="currentColor" />
+                        </div>
+                      </div>
+                      
+                      <div className="text-left">
+                        <div className="text-gray-300 text-xs font-bold flex items-center gap-1 mb-1">
+                          <Award className="w-3 h-3" fill="currentColor" /> PRATA
+                        </div>
+                        <p className="text-white font-bold text-sm leading-tight">João Pedro</p>
+                        <p className="text-gray-400/80 text-xs mt-1">48 horas</p>
+                      </div>
+                    </div>
+                    
+                    <div className="w-full mt-3 bg-gray-700/50 rounded-full h-1.5 overflow-hidden">
+                      <div className="bg-gradient-to-r from-gray-300 to-gray-500 h-full rounded-full" style={{width: '85%'}}></div>
+                    </div>
                   </div>
-                </div>
-                <div className="absolute -top-1 -right-1 bg-gray-400 text-gray-900 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</div>
-              </div>
-              <div className="min-w-0">
-                <div className="text-gray-300 text-[10px] font-bold flex items-center gap-1">
-                  <Award className="w-3 h-3" /> PRATA
-                </div>
-                <p className="text-white font-bold text-sm truncate">João Pedro</p>
-                <p className="text-gray-400 text-xs">48h</p>
-              </div>
-            </div>
+                </SwiperSlide>
 
-            {/* 🥉 Bronze */}
-            <div className="bg-gradient-to-r from-orange-700/10 to-amber-800/10 border border-amber-700/30 rounded-lg p-3 flex items-center gap-3 hover:border-amber-600 transition-all">
-              <div className="relative shrink-0">
-                <div className="w-12 h-12 rounded-full border-2 border-amber-700 overflow-hidden bg-gray-800">
-                  <img src="/aluno-bronze.jpg" alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                  <div className="absolute inset-0 flex items-center justify-center text-amber-700">
-                    <Award className="w-6 h-6" />
+                {/* 🥉 Bronze */}
+                <SwiperSlide>
+                  <div className="bg-gradient-to-br from-orange-700/20 via-amber-800/20 to-orange-900/20 border border-amber-700/50 rounded-lg p-4 h-full flex flex-col items-center justify-center relative overflow-hidden">
+                    <div className="absolute top-2 right-2 bg-amber-700 text-gray-900 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                      <Award className="w-3 h-3" fill="currentColor" /> 3º
+                    </div>
+                    
+                    <div className="relative z-10 flex items-center gap-3">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-full border-2 border-amber-700 overflow-hidden bg-gray-800 shadow-lg shadow-amber-700/30">
+                          <img src="/aluno-bronze.jpg" alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <div className="absolute inset-0 flex items-center justify-center text-amber-700/50">
+                            <Award className="w-8 h-8" />
+                          </div>
+                        </div>
+                        <div className="absolute -bottom-1 -right-3 bg-amber-700 rounded-full p-1.5 shadow-lg shadow-amber-700/50">
+                          <Award className="w-4 h-4 text-gray-900" fill="currentColor" />
+                        </div>
+                      </div>
+                      
+                      <div className="text-left">
+                        <div className="text-amber-600 text-xs font-bold flex items-center gap-1 mb-1">
+                          <Award className="w-3 h-3" fill="currentColor" /> BRONZE
+                        </div>
+                        <p className="text-white font-bold text-sm leading-tight">Ana Luiza</p>
+                        <p className="text-amber-600/80 text-xs mt-1">45 horas</p>
+                      </div>
+                    </div>
+                    
+                    <div className="w-full mt-3 bg-gray-700/50 rounded-full h-1.5 overflow-hidden">
+                      <div className="bg-gradient-to-r from-amber-600 to-orange-800 h-full rounded-full" style={{width: '80%'}}></div>
+                    </div>
                   </div>
-                </div>
-                <div className="absolute -top-1 -right-1 bg-amber-700 text-gray-900 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">3</div>
-              </div>
-              <div className="min-w-0">
-                <div className="text-amber-600 text-[10px] font-bold flex items-center gap-1">
-                  <Award className="w-3 h-3" /> BRONZE
-                </div>
-                <p className="text-white font-bold text-sm truncate">Ana Luiza</p>
-                <p className="text-gray-400 text-xs">45h</p>
+                </SwiperSlide>
+              </Swiper>
+              
+              {/* Indicador de slide */}
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-20">
+                <div className="w-1.5 h-1.5 rounded-full bg-yellow-500/50"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-500/50"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-500/50"></div>
               </div>
             </div>
           </div>
 
-          {/* Colunas 2-4: Continue de onde parou (simplificado) */}
+          {/* ▶️ Coluna Direita: Continue de onde parou (ocupa o resto) */}
           <div className="lg:col-span-3">
             <button 
               onClick={() => {
@@ -280,73 +346,87 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                   router.push(`/cursos/${cursoEmAndamento.id}`)
                 }
               }}
-              className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 p-6 rounded-xl transition-all text-left group flex items-center gap-4"
+              className="w-full h-full min-h-[180px] bg-gray-800 hover:bg-gray-700 border border-gray-700 p-6 rounded-xl transition-all text-left group flex items-center gap-6"
             >
-              <div className="bg-orange-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
-                <Play className="w-6 h-6 text-orange-500" fill="currentColor" />
+              <div className="bg-orange-500/20 p-4 rounded-full group-hover:scale-110 transition-transform shrink-0">
+                <Play className="w-8 h-8 text-orange-500" fill="currentColor" />
               </div>
               <div className="flex-1">
-                <h3 className="text-white font-bold text-lg">Continue de onde parou</h3>
-                <div className="mt-2">
-                  <div className="w-full bg-gray-700 rounded-full h-2">
-                    <div 
-                      className="bg-orange-500 h-2 rounded-full transition-all"
-                      style={{ width: `${progressoAtual}%` }}
-                    />
-                  </div>
-                  <p className="text-orange-400 text-sm mt-1">
-                    {progressoAtual}% completo {cursoEmAndamento && `- ${cursoEmAndamento.titulo}`}
-                  </p>
-                </div>
+                <h3 className="text-white font-bold text-xl mb-2">Continue de onde parou</h3>
+                {cursoEmAndamento ? (
+                  <>
+                    <p className="text-gray-400 text-sm mb-3 truncate">{cursoEmAndamento.titulo}</p>
+                    <div className="w-full bg-gray-700 rounded-full h-3 mb-2">
+                      <div 
+                        className="bg-gradient-to-r from-orange-500 to-red-500 h-3 rounded-full transition-all"
+                        style={{ width: `${progressoAtual}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <p className="text-orange-400 text-sm font-bold">{progressoAtual}% completo</p>
+                      <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-white transition-colors" />
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-gray-500">Nenhum curso iniciado ainda</p>
+                )}
               </div>
-              <ChevronRight className="w-6 h-6 text-gray-500 group-hover:text-white transition-colors" />
             </button>
           </div>
         </div>
 
-        {/* Ferramentas Rápidas - 3 Cards */}
-        <div className="grid grid-cols-3 gap-4 mb-8 max-w-2xl">
+        {/* Linha 2: Ferramentas Rápidas (3 cards lado a lado) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {/* Dicionário */}
           <a 
             href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all flex flex-col items-center justify-center gap-2 text-center group"
+            className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-5 rounded-xl transition-all flex items-center gap-4 group"
           >
-            <div className="bg-green-500/20 p-2 rounded-lg group-hover:scale-110 transition-transform">
-              <BookOpen className="w-5 h-5 text-green-500" />
+            <div className="bg-green-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform shrink-0">
+              <BookOpen className="w-6 h-6 text-green-500" />
             </div>
-            <span className="text-white font-bold text-xs">Dicionário<br/>de Acordes</span>
+            <div>
+              <span className="text-white font-bold block">Dicionário de Acordes</span>
+              <span className="text-gray-400 text-xs">PDF completo</span>
+            </div>
           </a>
 
           {/* Afinador */}
           <button 
             onClick={() => setMostrarAfinador(true)}
-            className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all flex flex-col items-center justify-center gap-2 text-center group"
+            className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-5 rounded-xl transition-all flex items-center gap-4 group text-left"
           >
-            <div className="bg-purple-500/20 p-2 rounded-lg group-hover:scale-110 transition-transform">
-              <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-purple-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform shrink-0">
+              <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
               </svg>
             </div>
-            <span className="text-white font-bold text-xs">Afinador<br/>Digital</span>
+            <div>
+              <span className="text-white font-bold block">Afinador Digital</span>
+              <span className="text-gray-400 text-xs">Afinar violão</span>
+            </div>
           </button>
 
           {/* Metrônomo */}
           <button 
             onClick={() => setMostrarMetronomo(true)}
-            className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all flex flex-col items-center justify-center gap-2 text-center group"
+            className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-5 rounded-xl transition-all flex items-center gap-4 group text-left"
           >
-            <div className="bg-pink-500/20 p-2 rounded-lg group-hover:scale-110 transition-transform">
-              <svg className="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-pink-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform shrink-0">
+              <svg className="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <span className="text-white font-bold text-xs">Metrônomo<br/>Pro</span>
+            <div>
+              <span className="text-white font-bold block">Metrônomo Pro</span>
+              <span className="text-gray-400 text-xs">Praticar ritmo</span>
+            </div>
           </button>
         </div>
 
-        {/* Cursos - Carrossel */}
+        {/* Linha 3: Cursos */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold">Seus Cursos</h3>
