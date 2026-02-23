@@ -289,83 +289,9 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
           </div>
         </div>
 
-                 {/* Botões de Ação */}
-        <div className="space-y-4 mb-8">
-          
-          {/* 1. Continue de onde parou - GRANDE (ocupa largura total) */}
-          <button 
-            onClick={() => {
-              if (cursoEmAndamento) {
-                router.push(`/cursos/${cursoEmAndamento.id}`)
-              }
-            }}
-            className="w-full bg-gray-800 hover:bg-gray-700 border border-gray-700 p-6 rounded-xl transition-all duration-300 text-left group flex items-center gap-4"
-          >
-            <div className="bg-orange-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
-              <Play className="w-6 h-6 text-orange-500" fill="currentColor" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-white font-bold text-lg">Continue de onde parou</h3>
-              <div className="mt-2">
-                <div className="w-full bg-gray-700 rounded-full h-2">
-                  <div 
-                    className="bg-orange-500 h-2 rounded-full transition-all"
-                    style={{ width: `${progressoAtual}%` }}
-                  />
-                </div>
-                <p className="text-orange-400 text-sm mt-1">
-                  {progressoAtual}% completo
-                </p>
-              </div>
-            </div>
-          </button>
+       
 
-          {/* 2. Ferramentas Rápidas - 3 Cards Compactos (grid de 3 colunas) */}
-          <div className="grid grid-cols-3 gap-3">
-            
-            {/* Dicionário de Acordes */}
-            <a 
-              href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center group min-h-[120px]"
-            >
-              <div className="bg-green-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
-                <BookOpen className="w-6 h-6 text-green-500" />
-              </div>
-              <span className="text-white font-bold text-xs leading-tight">Dicionário<br/>de Acordes</span>
-            </a>
-
-            {/* Afinador Digital */}
-            <button 
-              onClick={() => setMostrarAfinador(true)}
-              className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center group min-h-[120px]"
-            >
-              <div className="bg-purple-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
-                <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                </svg>
-              </div>
-              <span className="text-white font-bold text-xs leading-tight">Afinador<br/>Digital</span>
-            </button>
-
-            {/* Metrônomo Pro */}
-            <button 
-              onClick={() => setMostrarMetronomo(true)}
-              className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center group min-h-[120px]"
-            >
-              <div className="bg-pink-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
-                <svg className="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span className="text-white font-bold text-xs leading-tight">Metrônomo<br/>Pro</span>
-            </button>
-            
-          </div>
-        </div>
-
-        {/* Cursos - Carrossel */}
+        
 
         {/* Cursos - Carrossel */}
         <div className="mb-8">
