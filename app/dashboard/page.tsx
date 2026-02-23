@@ -233,9 +233,12 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
                           <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                          <div className="absolute inset-0 flex items-center justify-center text-yellow-500/50 bg-gray-800/50">
-                            <Crown className="w-7 h-7" />
-                          </div>
+                          
+<div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
+  <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+</div>
+
+
                         </div>
                         <div className="absolute -bottom-1 -right-2 bg-yellow-500 rounded-full p-1 shadow-lg animate-bounce">
                           <Trophy className="w-3 h-3 text-gray-900" fill="currentColor" />
@@ -268,9 +271,9 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-gray-400 overflow-hidden bg-gray-800 shadow-lg">
                           <img src="/aluno-prata.jpg" alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                          <div className="absolute inset-0 flex items-center justify-center text-gray-400/50 bg-gray-800/50">
-                            <Award className="w-7 h-7" />
-                          </div>
+                          <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
+  <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+</div>
                         </div>
                         <div className="absolute -bottom-1 -right-2 bg-gray-400 rounded-full p-1 shadow-lg">
                           <Award className="w-3 h-3 text-gray-900" fill="currentColor" />
@@ -303,9 +306,9 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-amber-700 overflow-hidden bg-gray-800 shadow-lg">
                           <img src="/aluno-bronze.jpg" alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                          <div className="absolute inset-0 flex items-center justify-center text-amber-700/50 bg-gray-800/50">
-                            <Award className="w-7 h-7" />
-                          </div>
+                          <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
+  <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+</div>
                         </div>
                         <div className="absolute -bottom-1 -right-2 bg-amber-700 rounded-full p-1 shadow-lg">
                           <Award className="w-3 h-3 text-gray-900" fill="currentColor" />
