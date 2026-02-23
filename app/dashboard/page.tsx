@@ -1,5 +1,6 @@
 'use client'
 
+import { Trophy, Crown, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
@@ -203,21 +204,94 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">
-            Bem-vindo de volta! 🎸
-          </h2>
-          <p className="text-gray-400">
-            Continue sua jornada musical. Você tem {cursos.length} curso(s) disponível(eis).
-          </p>
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome + Aluno Destaque */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          {/* Texto de boas-vindas */}
+          <div className="lg:col-span-3 bg-gradient-to-r from-blue-600/20 to-blue-800/20 border border-blue-500/30 rounded-xl p-6 flex flex-col justify-center">
+            <h2 className="text-3xl font-bold mb-2 text-white">
+              Bem-vindo de volta! 🎸
+            </h2>
+            <p className="text-gray-300">
+              Continue sua jornada musical. Você tem <span className="text-blue-400 font-bold">{cursos.length}</span> curso(s) disponível(eis).
+            </p>
+            <div className="mt-4 flex gap-3">
+              <div className="bg-blue-500/20 px-3 py-1 rounded-full text-xs text-blue-300 border border-blue-500/30">
+                🎯 Módulo atual: Introdução
+              </div>
+              <div className="bg-green-500/20 px-3 py-1 rounded-full text-xs text-green-300 border border-green-500/30">
+                ✅ 3 aulas completadas
+              </div>
+            </div>
+          </div>
+
+          {/* 🏆 Aluno Destaque do Semestre */}
+          <div className="lg:col-span-1">
+            <div className="bg-gradient-to-br from-yellow-500/20 via-orange-500/20 to-yellow-600/20 border-2 border-yellow-400/50 rounded-xl p-4 relative overflow-hidden group hover:border-yellow-400 hover:shadow-lg hover:shadow-yellow-500/20 transition-all duration-300 cursor-pointer">
+              {/* Background animado */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-yellow-500/20 transition-all"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl -ml-12 -mb-12"></div>
+              
+              {/* Badge flutuante */}
+              <div className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-lg animate-pulse">
+                <Star className="w-3 h-3" fill="currentColor" />
+                TOP 1
+              </div>
+
+              {/* Foto e Troféu */}
+              <div className="flex flex-col items-center relative z-10">
+                <div className="relative mb-3">
+                  {/* Container da foto */}
+                  <div className="w-20 h-20 rounded-full border-4 border-yellow-400/50 overflow-hidden bg-gradient-to-br from-gray-700 to-gray-800 shadow-xl group-hover:scale-105 transition-transform duration-300 relative">
+                    <img 
+                      src="/aluno-destaque.jpg" 
+                      alt="Aluno Destaque"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center text-yellow-500/50">
+                      <Crown className="w-10 h-10" />
+                    </div>
+                  </div>
+                  
+                  {/* Troféu dourado flutuante */}
+                  <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full p-2 shadow-lg shadow-yellow-500/40 border-2 border-yellow-200 animate-bounce">
+                    <Trophy className="w-5 h-5 text-gray-900" fill="currentColor" />
+                  </div>
+                  
+                  <div className="absolute inset-0 rounded-full bg-yellow-400/30 blur-md animate-pulse"></div>
+                </div>
+
+                <div className="text-center w-full">
+                  <h3 className="text-yellow-400 font-bold text-sm mb-1 flex items-center justify-center gap-1">
+                    <Crown className="w-4 h-4" fill="currentColor" />
+                    Aluno Destaque
+                  </h3>
+                  <p className="text-white font-bold text-lg leading-tight group-hover:text-yellow-200 transition-colors">
+                    Maria Silva
+                  </p>
+                  <p className="text-yellow-500/80 text-xs mt-1 font-medium">Semestre 2025.1</p>
+                  
+                  <div className="mt-4 pt-3 border-t border-yellow-500/30">
+                    <div className="flex justify-between items-center text-xs mb-1">
+                      <span className="text-gray-400">Prática</span>
+                      <span className="text-yellow-400 font-bold">52 horas</span>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-1.5 overflow-hidden">
+                      <div className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full rounded-full" style={{width: '92%'}}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Botões de Ação */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          
-          {/* 1. Continue de onde parou - CORRIGIDO */}
+          {/* Continue de onde parou */}
           <button 
             onClick={() => {
               if (cursoEmAndamento) {
@@ -235,7 +309,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                 <div className="w-full bg-gray-700 rounded-full h-2">
                   <div 
                     className="bg-orange-500 h-2 rounded-full transition-all"
-                    style={{ width: `${progressoAtual}%` }}  // ✅ USANDO A VARIÁVEL CORRETA
+                    style={{ width: `${progressoAtual}%` }}
                   />
                 </div>
                 <p className="text-orange-400 text-sm mt-1">
@@ -244,64 +318,59 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
               </div>
             </div>
           </button>
-                    {/* Ferramentas Rápidas - 3 Cards Compactos */}
+
+          {/* Ferramentas Rápidas - 3 Cards */}
           <div className="grid grid-cols-3 gap-3">
-            
-            {/* Dicionário de Acordes */}
+            {/* Dicionário */}
             <a 
               href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center group min-h-[120px]"
+              className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all flex flex-col items-center justify-center gap-2 text-center group"
             >
-              <div className="bg-green-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
-                <BookOpen className="w-6 h-6 text-green-500" />
+              <div className="bg-green-500/20 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                <BookOpen className="w-5 h-5 text-green-500" />
               </div>
-              <span className="text-white font-bold text-xs leading-tight">Dicionário<br/>de Acordes</span>
+              <span className="text-white font-bold text-xs">Dicionário<br/>de Acordes</span>
             </a>
 
-            {/* Afinador Digital */}
+            {/* Afinador */}
             <button 
               onClick={() => setMostrarAfinador(true)}
-              className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center group min-h-[120px]"
+              className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all flex flex-col items-center justify-center gap-2 text-center group"
             >
-              <div className="bg-purple-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
-                <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-purple-500/20 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                 </svg>
               </div>
-              <span className="text-white font-bold text-xs leading-tight">Afinador<br/>Digital</span>
+              <span className="text-white font-bold text-xs">Afinador<br/>Digital</span>
             </button>
 
-            {/* Metrônomo Pro */}
+            {/* Metrônomo */}
             <button 
               onClick={() => setMostrarMetronomo(true)}
-              className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center group min-h-[120px]"
+              className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-4 rounded-xl transition-all flex flex-col items-center justify-center gap-2 text-center group"
             >
-              <div className="bg-pink-500/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
-                <svg className="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-pink-500/20 p-2 rounded-lg group-hover:scale-110 transition-transform">
+                <svg className="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <span className="text-white font-bold text-xs leading-tight">Metrônomo<br/>Pro</span>
+              <span className="text-white font-bold text-xs">Metrônomo<br/>Pro</span>
             </button>
-            
           </div>
         </div>
-
-       
-
-        
 
         {/* Cursos - Carrossel */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold">Seus Cursos</h3>
             <div className="flex gap-2">
-              <button className="swiper-button-prev-custom w-10 h-10 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center hover:bg-orange-600 hover:border-orange-500 transition-all disabled:opacity-50">
+              <button className="swiper-button-prev-custom w-10 h-10 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center hover:bg-orange-600 transition-all">
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <button className="swiper-button-next-custom w-10 h-10 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center hover:bg-orange-600 hover:border-orange-500 transition-all disabled:opacity-50">
+              <button className="swiper-button-next-custom w-10 h-10 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center hover:bg-orange-600 transition-all">
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
@@ -310,15 +379,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
           {cursos.length === 0 ? (
             <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
               <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400 mb-4">Nenhum curso disponível ainda.</p>
-              {isAdmin && (
-                <button
-                  onClick={() => router.push('/admin')}
-                  className="text-orange-500 hover:text-orange-400 font-medium"
-                >
-                  Ir para Admin e criar cursos →
-                </button>
-              )}
+              <p className="text-gray-400">Nenhum curso disponível ainda.</p>
             </div>
           ) : (
             <Swiper
@@ -332,102 +393,41 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
               pagination={{ clickable: true, dynamicBullets: true }}
               autoplay={{ delay: 5000, disableOnInteraction: false }}
               breakpoints={{
-                640: {
-                  slidesPerView: 1,
-                  spaceBetween: 20,
-                },
-                768: {
-                  slidesPerView: 2,
-                  spaceBetween: 24,
-                },
-                1024: {
-                  slidesPerView: 3,
-                  spaceBetween: 24,
-                },
+                640: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
               }}
               className="!pb-12"
             >
               {cursos.map((curso) => (
                 <SwiperSlide key={curso.id}>
                   <div 
-                    className="group bg-gray-800 rounded-xl overflow-hidden border border-gray-700 
-                               transform transition-all duration-300 ease-out 
-                               hover:scale-105 hover:border-orange-500 
-                               hover:shadow-2xl hover:shadow-orange-500/20 
-                               cursor-pointer h-full"
+                    className="group bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-orange-500 transition-all cursor-pointer h-full"
                     onClick={() => router.push(`/cursos/${curso.id}`)}
                   >
-                    {/* Capa com Imagem */}
                     <div className="h-48 overflow-hidden relative">
                       {curso.imagem_url ? (
-                        <img 
-                          src={curso.imagem_url}
-                          alt={curso.titulo}
-                          className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
-                        />
+                        <img src={curso.imagem_url} alt={curso.titulo} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                       ) : (
-                        <div className="h-full bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center 
-                                        transform transition-transform duration-500 group-hover:scale-110">
+                        <div className="h-full bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center">
                           <BookOpen className="w-16 h-16 text-white/30" />
                         </div>
                       )}
-                      <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-xs text-white font-medium">
-                        {new Date(curso.created_at).toLocaleDateString('pt-BR')}
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent pointer-events-none" />
                     </div>
-                    
-                    {/* Conteúdo */}
                     <div className="p-6">
-                      <h4 className="text-xl font-bold mb-2 group-hover:text-orange-400 transition-colors">
-                        {curso.titulo}
-                      </h4>
-                      <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                        {curso.descricao || 'Sem descrição'}
-                      </p>
-                      
-                      {/* Progresso */}
+                      <h4 className="text-xl font-bold mb-2 group-hover:text-orange-400 transition-colors">{curso.titulo}</h4>
                       <div className="mb-4">
-                        <div className="flex items-center justify-between text-sm mb-1">
+                        <div className="flex justify-between text-sm mb-1">
                           <span className="text-gray-400">Progresso</span>
                           <span className="text-orange-500 font-bold">{progressosCursos[curso.id] || 0}%</span>
                         </div>
-                        <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
-                          <div 
-                            className="bg-orange-500 h-2 rounded-full transition-all duration-1000" 
-                            style={{ width: `${progressosCursos[curso.id] || 0}%` }}
-                          />
+                        <div className="w-full bg-gray-700 rounded-full h-2">
+                          <div className="bg-orange-500 h-2 rounded-full" style={{ width: `${progressosCursos[curso.id] || 0}%` }} />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">0 de 0 aulas completadas</p>
                       </div>
-                      
-                      {/* Botões */}
-                      <div className="space-y-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            router.push(`/cursos/${curso.id}`)
-                          }}
-                          className="w-full bg-gray-700 group-hover:bg-orange-600 text-white font-medium py-3 rounded-lg 
-                                   transition-all duration-300"
-                        >
-                          Começar curso
-                        </button>
-                        
-                        {isAdmin && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              router.push(`/admin/cursos/${curso.id}/aulas`)
-                            }}
-                            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg 
-                                     transition-colors flex items-center justify-center gap-2"
-                          >
-                            <Settings className="w-4 h-4" />
-                            Gerenciar Aulas
-                          </button>
-                        )}
-                      </div>
+                      <button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 rounded-lg transition-colors">
+                        Acessar curso
+                      </button>
                     </div>
                   </div>
                 </SwiperSlide>
@@ -435,9 +435,10 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
             </Swiper>
           )}
         </div>
-              {mostrarAfinador && <Afinador onClose={() => setMostrarAfinador(false)} />}
-       {mostrarMetronomo && <Metronomo onClose={() => setMostrarMetronomo(false)} />}         
-    </main>
+              
+        {mostrarAfinador && <Afinador onClose={() => setMostrarAfinador(false)} />}
+        {mostrarMetronomo && <Metronomo onClose={() => setMostrarMetronomo(false)} />}         
+      </main>
     </div>
   )
 }
