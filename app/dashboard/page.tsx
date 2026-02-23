@@ -208,119 +208,120 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
           
           {/* 🏆 Coluna Esquerda: Carrossel Automático do Ranking (Ouro/Prata/Bronze) */}
+                    
           <div className="lg:col-span-1">
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-xl p-1 h-[180px] relative overflow-hidden">
+            <div className="bg-gray-800 border border-gray-700 rounded-xl p-1 h-[160px] relative overflow-hidden">
               <Swiper
-                modules={[Autoplay, EffectFade]}
-                effect="fade"
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
+                modules={[Autoplay]}
+                autoplay={{ 
+                  delay: 3000, 
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true
+                }}
+                speed={600}
                 loop={true}
                 className="h-full rounded-lg"
               >
                 {/* 🥇 Ouro */}
-                <SwiperSlide>
-                  <div className="bg-gradient-to-br from-yellow-500/20 via-yellow-600/20 to-orange-500/20 border border-yellow-500/50 rounded-lg p-4 h-full flex flex-col items-center justify-center relative overflow-hidden group">
-                    {/* Efeito pulsante */}
-                    <div className="absolute inset-0 bg-yellow-400/10 animate-pulse"></div>
-                    <div className="absolute top-2 right-2 bg-yellow-500 text-gray-900 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                <SwiperSlide className="h-full">
+                  <div className="bg-gradient-to-br from-yellow-500/20 via-yellow-600/20 to-orange-500/20 border border-yellow-500/50 rounded-lg p-3 h-full flex flex-col items-center justify-center relative">
+                    <div className="absolute top-2 right-2 bg-yellow-500 text-gray-900 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Trophy className="w-3 h-3" fill="currentColor" /> 1º
                     </div>
                     
-                    <div className="relative z-10 flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-16 h-16 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg shadow-yellow-500/30">
+                    <div className="flex items-center gap-3 w-full">
+                      <div className="relative shrink-0">
+                        <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
                           <img src="/aluno-ouro.jpg" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                          <div className="absolute inset-0 flex items-center justify-center text-yellow-500/50">
-                            <Crown className="w-8 h-8" />
+                          <div className="absolute inset-0 flex items-center justify-center text-yellow-500/50 bg-gray-800/50">
+                            <Crown className="w-7 h-7" />
                           </div>
                         </div>
-                        {/* Troféu flutuante ao lado da foto */}
-                        <div className="absolute -bottom-1 -right-3 bg-yellow-500 rounded-full p-1.5 shadow-lg shadow-yellow-500/50 animate-bounce">
-                          <Trophy className="w-4 h-4 text-gray-900" fill="currentColor" />
+                        <div className="absolute -bottom-1 -right-2 bg-yellow-500 rounded-full p-1 shadow-lg animate-bounce">
+                          <Trophy className="w-3 h-3 text-gray-900" fill="currentColor" />
                         </div>
                       </div>
                       
-                      <div className="text-left">
-                        <div className="text-yellow-400 text-xs font-bold flex items-center gap-1 mb-1">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-yellow-400 text-[10px] font-bold flex items-center gap-1 mb-0.5">
                           <Crown className="w-3 h-3" fill="currentColor" /> OURO
                         </div>
-                        <p className="text-white font-bold text-sm leading-tight">Maria Silva</p>
-                        <p className="text-yellow-500/80 text-xs mt-1">52 horas</p>
+                        <p className="text-white font-bold text-sm truncate leading-tight">Maria Silva</p>
+                        <p className="text-yellow-500/80 text-xs">52 horas</p>
                       </div>
                     </div>
                     
-                    {/* Barra de progresso decorativa */}
-                    <div className="w-full mt-3 bg-gray-700/50 rounded-full h-1.5 overflow-hidden">
-                      <div className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full rounded-full animate-pulse" style={{width: '92%'}}></div>
+                    <div className="w-full mt-2 bg-gray-700/50 rounded-full h-1.5">
+                      <div className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full rounded-full" style={{width: '92%'}}></div>
                     </div>
                   </div>
                 </SwiperSlide>
 
                 {/* 🥈 Prata */}
-                <SwiperSlide>
-                  <div className="bg-gradient-to-br from-gray-400/20 via-gray-500/20 to-gray-600/20 border border-gray-400/50 rounded-lg p-4 h-full flex flex-col items-center justify-center relative overflow-hidden">
-                    <div className="absolute top-2 right-2 bg-gray-400 text-gray-900 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                <SwiperSlide className="h-full">
+                  <div className="bg-gradient-to-br from-gray-400/20 via-gray-500/20 to-gray-600/20 border border-gray-400/50 rounded-lg p-3 h-full flex flex-col items-center justify-center relative">
+                    <div className="absolute top-2 right-2 bg-gray-400 text-gray-900 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Award className="w-3 h-3" fill="currentColor" /> 2º
                     </div>
                     
-                    <div className="relative z-10 flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-16 h-16 rounded-full border-2 border-gray-400 overflow-hidden bg-gray-800 shadow-lg shadow-gray-400/30">
+                    <div className="flex items-center gap-3 w-full">
+                      <div className="relative shrink-0">
+                        <div className="w-14 h-14 rounded-full border-2 border-gray-400 overflow-hidden bg-gray-800 shadow-lg">
                           <img src="/aluno-prata.jpg" alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                          <div className="absolute inset-0 flex items-center justify-center text-gray-400/50">
-                            <Award className="w-8 h-8" />
+                          <div className="absolute inset-0 flex items-center justify-center text-gray-400/50 bg-gray-800/50">
+                            <Award className="w-7 h-7" />
                           </div>
                         </div>
-                        <div className="absolute -bottom-1 -right-3 bg-gray-400 rounded-full p-1.5 shadow-lg shadow-gray-400/50">
-                          <Award className="w-4 h-4 text-gray-900" fill="currentColor" />
+                        <div className="absolute -bottom-1 -right-2 bg-gray-400 rounded-full p-1 shadow-lg">
+                          <Award className="w-3 h-3 text-gray-900" fill="currentColor" />
                         </div>
                       </div>
                       
-                      <div className="text-left">
-                        <div className="text-gray-300 text-xs font-bold flex items-center gap-1 mb-1">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-gray-300 text-[10px] font-bold flex items-center gap-1 mb-0.5">
                           <Award className="w-3 h-3" fill="currentColor" /> PRATA
                         </div>
-                        <p className="text-white font-bold text-sm leading-tight">João Pedro</p>
-                        <p className="text-gray-400/80 text-xs mt-1">48 horas</p>
+                        <p className="text-white font-bold text-sm truncate leading-tight">João Pedro</p>
+                        <p className="text-gray-400/80 text-xs">48 horas</p>
                       </div>
                     </div>
                     
-                    <div className="w-full mt-3 bg-gray-700/50 rounded-full h-1.5 overflow-hidden">
+                    <div className="w-full mt-2 bg-gray-700/50 rounded-full h-1.5">
                       <div className="bg-gradient-to-r from-gray-300 to-gray-500 h-full rounded-full" style={{width: '85%'}}></div>
                     </div>
                   </div>
                 </SwiperSlide>
 
                 {/* 🥉 Bronze */}
-                <SwiperSlide>
-                  <div className="bg-gradient-to-br from-orange-700/20 via-amber-800/20 to-orange-900/20 border border-amber-700/50 rounded-lg p-4 h-full flex flex-col items-center justify-center relative overflow-hidden">
-                    <div className="absolute top-2 right-2 bg-amber-700 text-gray-900 text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                <SwiperSlide className="h-full">
+                  <div className="bg-gradient-to-br from-orange-700/20 via-amber-800/20 to-orange-900/20 border border-amber-700/50 rounded-lg p-3 h-full flex flex-col items-center justify-center relative">
+                    <div className="absolute top-2 right-2 bg-amber-700 text-gray-900 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                       <Award className="w-3 h-3" fill="currentColor" /> 3º
                     </div>
                     
-                    <div className="relative z-10 flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-16 h-16 rounded-full border-2 border-amber-700 overflow-hidden bg-gray-800 shadow-lg shadow-amber-700/30">
+                    <div className="flex items-center gap-3 w-full">
+                      <div className="relative shrink-0">
+                        <div className="w-14 h-14 rounded-full border-2 border-amber-700 overflow-hidden bg-gray-800 shadow-lg">
                           <img src="/aluno-bronze.jpg" alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                          <div className="absolute inset-0 flex items-center justify-center text-amber-700/50">
-                            <Award className="w-8 h-8" />
+                          <div className="absolute inset-0 flex items-center justify-center text-amber-700/50 bg-gray-800/50">
+                            <Award className="w-7 h-7" />
                           </div>
                         </div>
-                        <div className="absolute -bottom-1 -right-3 bg-amber-700 rounded-full p-1.5 shadow-lg shadow-amber-700/50">
-                          <Award className="w-4 h-4 text-gray-900" fill="currentColor" />
+                        <div className="absolute -bottom-1 -right-2 bg-amber-700 rounded-full p-1 shadow-lg">
+                          <Award className="w-3 h-3 text-gray-900" fill="currentColor" />
                         </div>
                       </div>
                       
-                      <div className="text-left">
-                        <div className="text-amber-600 text-xs font-bold flex items-center gap-1 mb-1">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-amber-600 text-[10px] font-bold flex items-center gap-1 mb-0.5">
                           <Award className="w-3 h-3" fill="currentColor" /> BRONZE
                         </div>
-                        <p className="text-white font-bold text-sm leading-tight">Ana Luiza</p>
-                        <p className="text-amber-600/80 text-xs mt-1">45 horas</p>
+                        <p className="text-white font-bold text-sm truncate leading-tight">Ana Luiza</p>
+                        <p className="text-amber-600/80 text-xs">45 horas</p>
                       </div>
                     </div>
                     
-                    <div className="w-full mt-3 bg-gray-700/50 rounded-full h-1.5 overflow-hidden">
+                    <div className="w-full mt-2 bg-gray-700/50 rounded-full h-1.5">
                       <div className="bg-gradient-to-r from-amber-600 to-orange-800 h-full rounded-full" style={{width: '80%'}}></div>
                     </div>
                   </div>
@@ -328,14 +329,15 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
               </Swiper>
               
               {/* Indicador de slide */}
-              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1 z-20">
-                <div className="w-1.5 h-1.5 rounded-full bg-yellow-500/50"></div>
-                <div className="w-1.5 h-1.5 rounded-full bg-gray-500/50"></div>
-                <div className="w-1.5 h-1.5 rounded-full bg-gray-500/50"></div>
+              <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-1 z-10">
+                <div className="w-1.5 h-1.5 rounded-full bg-yellow-500"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-700"></div>
               </div>
             </div>
-          </div>
-
+            </div>
+                     
+               
           {/* ▶️ Coluna Direita: Continue de onde parou (ocupa o resto) */}
           <div className="lg:col-span-3">
             <button 
