@@ -232,7 +232,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/fff.jpg" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                           
 <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
   <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
@@ -249,7 +249,8 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                         <div className="text-yellow-400 text-[10px] font-bold flex items-center gap-1 mb-0.5">
                           <Crown className="w-3 h-3" fill="currentColor" /> OURO
                         </div>
-                        <p className="text-white font-bold text-sm truncate leading-tight">Maria Silva</p>
+                        <p className="text-white font-bold text-sm truncate leading-tight">João Caipira
+</p>
                         <p className="text-yellow-500/80 text-xs">52 horas</p>
                       </div>
                     </div>
@@ -270,7 +271,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-gray-400 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="/aluno-prata.jpg" alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Jonivon.png" alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                           <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
   <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
 </div>
@@ -284,7 +285,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                         <div className="text-gray-300 text-[10px] font-bold flex items-center gap-1 mb-0.5">
                           <Award className="w-3 h-3" fill="currentColor" /> PRATA
                         </div>
-                        <p className="text-white font-bold text-sm truncate leading-tight">João Pedro</p>
+                        <p className="text-white font-bold text-sm truncate leading-tight">Jonivon JS</p>
                         <p className="text-gray-400/80 text-xs">48 horas</p>
                       </div>
                     </div>
@@ -305,7 +306,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-amber-700 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="/aluno-bronze.jpg" alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png" alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                           <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
   <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
 </div>
@@ -319,7 +320,8 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                         <div className="text-amber-600 text-[10px] font-bold flex items-center gap-1 mb-0.5">
                           <Award className="w-3 h-3" fill="currentColor" /> BRONZE
                         </div>
-                        <p className="text-white font-bold text-sm truncate leading-tight">Ana Luiza</p>
+                        <p className="text-white font-bold text-sm truncate leading-tight">Thiago Consoli
+</p>
                         <p className="text-amber-600/80 text-xs">45 horas</p>
                       </div>
                     </div>
