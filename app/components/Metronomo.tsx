@@ -106,7 +106,8 @@ export default function Metronomo({ onClose }: MetronomoProps) {
     setIsPlaying(!isPlaying)
   }
 
-  const handleClose = () => {
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation() // Evita que o clique propague para o fundo
     setIsPlaying(false) // Para o som ao fechar
     onClose()
   }
@@ -123,15 +124,16 @@ export default function Metronomo({ onClose }: MetronomoProps) {
   ]
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700 w-full max-w-md relative shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={handleClose}>
+      <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700 w-full max-w-md relative shadow-2xl" onClick={(e) => e.stopPropagation()}>
         
-        {/* Botão Fechar */}
+        {/* Botão Fechar - CORRIGIDO */}
         <button 
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10"
+          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-20 bg-gray-700/50 hover:bg-gray-700 p-2 rounded-full"
+          type="button"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         </button>
 
         {/* Conteúdo */}
@@ -199,7 +201,7 @@ export default function Metronomo({ onClose }: MetronomoProps) {
             <select 
               value={beatsPerMeasure}
               onChange={(e) => setBeatsPerMeasure(Number(e.target.value))}
-              className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600"
+              className="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:border-pink-500 focus:outline-none"
             >
               <option value={2}>2/4</option>
               <option value={3}>3/4</option>
@@ -230,7 +232,7 @@ export default function Metronomo({ onClose }: MetronomoProps) {
               isPlaying 
                 ? 'bg-red-600 hover:bg-red-700 animate-pulse' 
                 : 'bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500'
-            } text-white`}
+            } text-white transition-all transform hover:scale-[1.02] active:scale-[0.98]`}
           >
             {isPlaying ? (
               <><Pause className="w-6 h-6 fill-current" /> PAUSAR</>
