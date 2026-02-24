@@ -497,6 +497,18 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                       <button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 rounded-lg transition-colors">
                         Acessar curso
                       </button>
+                      {isAdmin && (
+  <button 
+    onClick={(e) => {
+      e.stopPropagation();
+      router.push(`/admin/cursos/${curso.id}/aulas`);
+    }}
+    className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+  >
+    <Settings className="w-4 h-4" />
+    Gerenciar aulas
+  </button>
+)}
                     </div>
                   </div>
                 </SwiperSlide>
