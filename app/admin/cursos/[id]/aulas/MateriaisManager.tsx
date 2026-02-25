@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { Paperclip, Trash2, Download, X } from 'lucide-react'
 
 interface Material {
   id: string
@@ -18,8 +19,7 @@ interface MateriaisManagerProps {
 export default function MateriaisManager({ aulaId }: MateriaisManagerProps) {
   const [materiais, setMateriais] = useState<Material[]>([])
   const [uploading, setUploading] = useState(false)
-  const [nomeArquivo, setNomeArquivo] = useState('')
-  const [arquivoSelecionado, setArquivoSelecionado] = useState<File | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const carregarMateriais = useCallback(async () => {
     try {
@@ -35,15 +35,15 @@ export default function MateriaisManager({ aulaId }: MateriaisManagerProps) {
     carregarMateriais()
   }, [carregarMateriais])
 
-  const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!arquivoSelecionado) return
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
 
     setUploading(true)
     
     const formData = new FormData()
-    formData.append('file', arquivoSelecionado)
-    formData.append('nome', nomeArquivo || arquivoSelecionado.name)
+    formData.append('file', file)
+    formData.append('nome', file.name)
 
     try {
       const res = await fetch(`/api/aulas/${aulaId}/materiais`, {
@@ -52,10 +52,9 @@ export default function MateriaisManager({ aulaId }: MateriaisManagerProps) {
       })
 
       if (res.ok) {
-        setNomeArquivo('')
-        setArquivoSelecionado(null)
         carregarMateriais()
-        alert('Material enviado com sucesso!')
+        // Limpa o input para permitir selecionar o mesmo arquivo novamente
+        if (fileInputRef.current) fileInputRef.current.value = ''
       } else {
         alert('Erro ao enviar arquivo')
       }
@@ -67,113 +66,97 @@ export default function MateriaisManager({ aulaId }: MateriaisManagerProps) {
   }
 
   const handleDelete = async (materialId: string) => {
-    if (!confirm('Tem certeza que deseja excluir este material?')) return
+    if (!confirm('Excluir este material?')) return
 
     try {
       const res = await fetch(`/api/aulas/${aulaId}/materiais?materialId=${materialId}`, {
         method: 'DELETE'
       })
 
-      if (res.ok) {
-        carregarMateriais()
-      }
+      if (res.ok) carregarMateriais()
     } catch (error) {
       alert('Erro ao excluir')
     }
   }
 
   const formatarTamanho = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes'
+    if (bytes === 0) return '0 B'
     const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const sizes = ['B', 'KB', 'MB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+    return Math.round((bytes / Math.pow(k, i)) * 10) / 10 + ' ' + sizes[i]
   }
 
   const getIconePorTipo = (tipo: string) => {
     if (tipo === 'pdf') return '📄'
     if (['jpg', 'jpeg', 'png', 'gif'].includes(tipo)) return '🖼️'
-    if (tipo === 'txt') return '📝'
     return '📎'
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 mt-6">
-      <h3 className="text-lg font-bold mb-4 text-gray-800">📚 Materiais de Apoio</h3>
-      
-      {/* Form de Upload */}
-      <form onSubmit={handleUpload} className="mb-6 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nome do material (opcional)
-            </label>
-            <input
-              type="text"
-              value={nomeArquivo}
-              onChange={(e) => setNomeArquivo(e.target.value)}
-              placeholder="Ex: Cifra completa da música"
-              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+    <div className="bg-gray-50 rounded-lg p-4 mt-4 border border-gray-200">
+      <div className="flex items-center justify-between mb-3">
+        <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <Paperclip className="w-4 h-4" />
+          Materiais ({materiais.length})
+        </h4>
+        
+        {/* Botão de upload minimalista */}
+        <label className={`cursor-pointer text-xs bg-white border border-gray-300 hover:bg-gray-50 px-3 py-1.5 rounded-md transition-colors flex items-center gap-1 ${uploading ? 'opacity-50' : ''}`}>
+          <span>{uploading ? '⏳' : '+'}</span>
+          <span>{uploading ? 'Enviando...' : 'Anexar'}</span>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png,.txt"
+            onChange={handleFileSelect}
+            disabled={uploading}
+            className="hidden"
+          />
+        </label>
+      </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Selecionar arquivo (PDF, JPG, PNG, TXT)
-            </label>
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png,.txt"
-              onChange={(e) => setArquivoSelecionado(e.target.files?.[0] || null)}
-              className="w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={!arquivoSelecionado || uploading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            {uploading ? '⏫ Enviando...' : '⬆️ Fazer Upload'}
-          </button>
-        </div>
-      </form>
-
-      {/* Lista de Materiais */}
-      <div className="space-y-2">
-        {materiais.length === 0 ? (
-          <p className="text-gray-500 text-center py-4">Nenhum material anexado ainda</p>
-        ) : (
-          materiais.map((material) => (
-            <div key={material.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border hover:shadow-sm transition-shadow">
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">{getIconePorTipo(material.tipo)}</span>
-                <div>
-                  <p className="font-medium text-gray-800">{material.nome}</p>
-                  <p className="text-xs text-gray-500">{formatarTamanho(material.tamanho)} • {material.tipo.toUpperCase()}</p>
+      {/* Lista compacta */}
+      {materiais.length === 0 ? (
+        <p className="text-xs text-gray-400 text-center py-3">Nenhum arquivo anexado</p>
+      ) : (
+        <div className="space-y-2">
+          {materiais.map((material) => (
+            <div key={material.id} className="flex items-center justify-between bg-white p-2 rounded border border-gray-200 group hover:border-gray-300 transition-colors">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className="text-lg flex-shrink-0">{getIconePorTipo(material.tipo)}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm text-gray-800 truncate font-medium" title={material.nome}>
+                    {material.nome}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    {formatarTamanho(material.tamanho)}
+                  </p>
                 </div>
               </div>
               
-              <div className="flex space-x-2">
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <a
                   href={material.download_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200 text-sm font-medium transition-colors"
+                  className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                  title="Download"
                 >
-                  ⬇️ Download
+                  <Download className="w-4 h-4" />
                 </a>
                 <button
                   onClick={() => handleDelete(material.id)}
-                  className="px-3 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200 text-sm font-medium transition-colors"
+                  className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                  title="Excluir"
                 >
-                  🗑️ Excluir
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
