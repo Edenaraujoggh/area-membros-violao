@@ -753,145 +753,136 @@ export default function CursoPage() {
               </div>
 
               {/* Controles de Loop */}
-              {playerReady && (
-                <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-bold text-gray-300 flex items-center gap-2">
-                      <Scissors className="w-4 h-4 text-orange-500" />
-                      Loop de Trecho (AB)
-                    </h3>
-                    <span className="text-xs text-gray-500">
-                      {formatTime(currentTime)} / {formatTime(duration)}
-                    </span>
-                  </div>
+            {playerReady && (
+  <div className="bg-gray-800 rounded-lg p-2 border border-gray-700">
+    <div className="flex items-center justify-between mb-2 px-1">
+      <h3 className="text-xs font-bold text-gray-400 flex items-center gap-1.5">
+        <Scissors className="w-3 h-3 text-orange-500" />
+        Loop AB
+      </h3>
+      <span className="text-[10px] text-gray-500 font-mono">
+        {formatTime(currentTime)} / {formatTime(duration)}
+      </span>
+    </div>
 
-                  {/* Barra de Progresso com Marcadores */}
-                  <div className="relative h-2 bg-gray-700 rounded-full mb-6 overflow-hidden">
-                    <div 
-                      className="absolute h-full bg-orange-500 transition-all"
-                      style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
-                    />
-                    
-                    {loopStart !== null && (
-                      <div 
-                        className="absolute h-full w-1 bg-green-500 z-10"
-                        style={{ left: `${(loopStart / duration) * 100}%` }}
-                      />
-                    )}
-                    
-                    {loopEnd !== null && (
-                      <div 
-                        className="absolute h-full w-1 bg-red-500 z-10"
-                        style={{ left: `${(loopEnd / duration) * 100}%` }}
-                      />
-                    )}
-                    
-                    {loopStart !== null && loopEnd !== null && (
-                      <div 
-                        className="absolute h-full bg-orange-500/30"
-                        style={{ 
-                          left: `${(loopStart / duration) * 100}%`,
-                          width: `${((loopEnd - loopStart) / duration) * 100}%`
-                        }}
-                      />
-                    )}
-                  </div>
+    <div className="relative h-1.5 bg-gray-700 rounded-full mb-2 overflow-hidden">
+      <div 
+        className="absolute h-full bg-orange-500 transition-all"
+        style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+      />
+      {loopStart !== null && (
+        <div 
+          className="absolute h-full w-0.5 bg-green-500 z-10"
+          style={{ left: `${(loopStart / duration) * 100}%` }}
+        />
+      )}
+      {loopEnd !== null && (
+        <div 
+          className="absolute h-full w-0.5 bg-red-500 z-10"
+          style={{ left: `${(loopEnd / duration) * 100}%` }}
+        />
+      )}
+      {loopStart !== null && loopEnd !== null && (
+        <div 
+          className="absolute h-full bg-orange-500/30"
+          style={{ 
+            left: `${(loopStart / duration) * 100}%`,
+            width: `${((loopEnd - loopStart) / duration) * 100}%`
+          }}
+        />
+      )}
+    </div>
 
-                  {/* Controles */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    <button
-                      onClick={markLoopStart}
-                      className={`flex flex-col items-center justify-center p-3 rounded-lg transition-all ${
-                        loopStart !== null 
-                          ? 'bg-green-600 text-white' 
-                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                      }`}
-                    >
-                      <span className="text-xs font-bold mb-1">INÍCIO [</span>
-                      <span className="text-lg font-mono">{loopStart ? formatTime(loopStart) : '--:--'}</span>
-                    </button>
+    <div className="grid grid-cols-4 gap-1.5">
+      <button
+        onClick={markLoopStart}
+        className={`flex flex-col items-center justify-center py-1.5 px-1 rounded transition-all ${
+          loopStart !== null 
+            ? 'bg-green-600/20 text-green-400 border border-green-600/30' 
+            : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+        }`}
+      >
+        <span className="text-[9px] font-bold mb-0.5">[ INÍCIO</span>
+        <span className="text-xs font-mono leading-none">{loopStart ? formatTime(loopStart) : '--:--'}</span>
+      </button>
 
-                    <button
-                      onClick={markLoopEnd}
-                      disabled={!loopStart}
-                      className={`flex flex-col items-center justify-center p-3 rounded-lg transition-all ${
-                        loopEnd !== null 
-                          ? 'bg-red-600 text-white' 
-                          : loopStart 
-                            ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
-                            : 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                      }`}
-                    >
-                      <span className="text-xs font-bold mb-1">FIM ]</span>
-                      <span className="text-lg font-mono">{loopEnd ? formatTime(loopEnd) : '--:--'}</span>
-                    </button>
+      <button
+        onClick={markLoopEnd}
+        disabled={!loopStart}
+        className={`flex flex-col items-center justify-center py-1.5 px-1 rounded transition-all ${
+          loopEnd !== null 
+            ? 'bg-red-600/20 text-red-400 border border-red-600/30' 
+            : loopStart 
+              ? 'bg-gray-700 text-gray-400 hover:bg-gray-600' 
+              : 'bg-gray-800 text-gray-600 cursor-not-allowed'
+        }`}
+      >
+        <span className="text-[9px] font-bold mb-0.5">FIM ]</span>
+        <span className="text-xs font-mono leading-none">{loopEnd ? formatTime(loopEnd) : '--:--'}</span>
+      </button>
 
-                    <button
-                      onClick={toggleLoop}
-                      disabled={!loopStart || !loopEnd}
-                      className={`flex flex-col items-center justify-center p-3 rounded-lg transition-all ${
-                        isLoopActive
-                          ? 'bg-orange-500 text-white animate-pulse'
-                          : !loopStart || !loopEnd
-                            ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                            : 'bg-gray-700 text-gray-300 hover:bg-orange-600'
-                      }`}
-                    >
-                      <Repeat className={`w-6 h-6 mb-1 ${isLoopActive ? 'animate-spin' : ''}`} />
-                      <span className="text-xs font-bold">{isLoopActive ? 'ON' : 'OFF'}</span>
-                    </button>
+      <button
+        onClick={toggleLoop}
+        disabled={!loopStart || !loopEnd}
+        className={`flex items-center justify-center gap-1 py-1.5 px-1 rounded transition-all ${
+          isLoopActive
+            ? 'bg-orange-500 text-white'
+            : !loopStart || !loopEnd
+              ? 'bg-gray-800 text-gray-600 cursor-not-allowed'
+              : 'bg-gray-700 text-gray-300 hover:bg-orange-600'
+        }`}
+      >
+        <Repeat className={`w-3.5 h-3.5 ${isLoopActive ? 'animate-spin' : ''}`} />
+        <span className="text-[9px] font-bold">{isLoopActive ? 'ON' : 'OFF'}</span>
+      </button>
 
-                    <button
-                      onClick={clearLoop}
-                      disabled={!loopStart && !loopEnd}
-                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-gray-700 text-gray-300 hover:bg-red-600 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <RotateCcw className="w-6 h-6 mb-1" />
-                      <span className="text-xs font-bold">LIMPAR</span>
-                    </button>
-                  </div>
+      <button
+        onClick={clearLoop}
+        disabled={!loopStart && !loopEnd}
+        className="flex items-center justify-center gap-1 py-1.5 px-1 rounded bg-gray-700 text-gray-400 hover:bg-red-600 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <RotateCcw className="w-3.5 h-3.5" />
+        <span className="text-[9px] font-bold">LIMPAR</span>
+      </button>
+    </div>
 
-                  {/* Ajuste Fino */}
-                  {loopStart !== null && (
-                    <div className="mt-4 pt-4 border-t border-gray-700">
-                      <p className="text-xs text-gray-500 mb-3 text-center">Ajuste fino (±1s)</p>
-                      <div className="flex justify-center gap-4">
-                        <div className="flex items-center gap-2">
-                          <button 
-                            onClick={() => adjustLoopPoint('start', -1)}
-                            className="w-10 h-10 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-white"
-                          >-</button>
-                          <span className="text-xs text-gray-400 w-16 text-center">Início</span>
-                          <button 
-                            onClick={() => adjustLoopPoint('start', 1)}
-                            className="w-10 h-10 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-white"
-                          >+</button>
-                        </div>
-                        
-                        {loopEnd !== null && (
-                          <div className="flex items-center gap-2">
-                            <button 
-                              onClick={() => adjustLoopPoint('end', -1)}
-                              className="w-10 h-10 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-white"
-                            >-</button>
-                            <span className="text-xs text-gray-400 w-16 text-center">Fim</span>
-                            <button 
-                              onClick={() => adjustLoopPoint('end', 1)}
-                              className="w-10 h-10 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-white"
-                            >+</button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+    {loopStart !== null && (
+      <div className="mt-1.5 pt-1.5 border-t border-gray-700/50 flex justify-center gap-3">
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={() => adjustLoopPoint('start', -1)}
+            className="w-6 h-6 rounded bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-white text-xs"
+          >-</button>
+          <span className="text-[10px] text-gray-500 w-10 text-center">Início</span>
+          <button 
+            onClick={() => adjustLoopPoint('start', 1)}
+            className="w-6 h-6 rounded bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-white text-xs"
+          >+</button>
+        </div>
+        
+        {loopEnd !== null && (
+          <div className="flex items-center gap-1">
+            <button 
+              onClick={() => adjustLoopPoint('end', -1)}
+              className="w-6 h-6 rounded bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-white text-xs"
+            >-</button>
+            <span className="text-[10px] text-gray-500 w-10 text-center">Fim</span>
+            <button 
+              onClick={() => adjustLoopPoint('end', 1)}
+              className="w-6 h-6 rounded bg-gray-700 hover:bg-gray-600 flex items-center justify-center text-white text-xs"
+            >+</button>
+          </div>
+        )}
+      </div>
+    )}
 
-                  {!loopStart && (
-                    <p className="mt-4 text-xs text-center text-gray-500">
-                      💡 Dica: Toque no vídeo no momento exato do solo, depois clique em "INÍCIO"
-                    </p>
-                  )}
-                </div>
-              )}
+    {!loopStart && (
+      <p className="mt-1.5 text-[10px] text-center text-gray-600 leading-tight">
+        Toque no vídeo no momento do solo, depois clique em [ INÍCIO
+      </p>
+    )}
+  </div>
+)}
             </div>
 
             {/* Navegação entre Aulas */}
