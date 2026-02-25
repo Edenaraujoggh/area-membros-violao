@@ -143,36 +143,6 @@ export default function CursoPage() {
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
     }
   }, [])
-// 🎸 TELA CHEIA AUTOMÁTICA NA ROTAÇÃO (Mobile)
-useEffect(() => {
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (!isMobile) return;
-
-  const handleOrientationChange = () => {
-    const videoContainer = document.getElementById('video-container');
-    const isLandscape = window.matchMedia("(orientation: landscape)").matches;
-    
-    if (isLandscape) {
-      if (videoContainer?.requestFullscreen) {
-        videoContainer.requestFullscreen().catch(err => console.log(err));
-      }
-    } else {
-      if (document.fullscreenElement && document.exitFullscreen) {
-        document.exitFullscreen().catch(err => console.log(err));
-      }
-    }
-  };
-
-  window.addEventListener('resize', handleOrientationChange);
-  window.addEventListener('orientationchange', handleOrientationChange);
-  
-  return () => {
-    window.removeEventListener('resize', handleOrientationChange);
-    window.removeEventListener('orientationchange', handleOrientationChange);
-  };
-}, []);
-
-  
 
   // Inicializar Player quando muda a aula
   useEffect(() => {
@@ -771,15 +741,6 @@ useEffect(() => {
                   )}
                 </div>
 
-
-{/* Dica de rotação (só aparece no celular em pé) */}
-<div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center text-white z-20 hidden portrait:flex sm:hidden">
-  <svg className="w-12 h-12 mb-2 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-  </svg>
-  <p className="text-sm font-bold">Gire o celular</p>
-  <p className="text-xs text-gray-400">Para tela cheia</p>
-</div>
 
                 
                 {/* Overlay de Loop Ativo */}
