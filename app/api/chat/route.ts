@@ -14,13 +14,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Dados faltando' }, { status: 400 })
     }
 
-    // Client Supabase
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
-    // Buscar histórico
     const { data: history } = await supabase
       .from('chat_messages')
       .select('role, content')
@@ -28,22 +26,30 @@ export async function POST(req: NextRequest) {
       .order('created_at', { ascending: false })
       .limit(5)
 
-    // Montar mensagens
-    const messages = [
+    // Montar mensagens com tipagem correta
+    const messages: Array<{role: 'system' | 'user' | 'assistant', content: string}> = [
       {
         role: 'system',
         content: `Você é um professor de violão experiente, paciente e encourajador chamado "Professor Virtual". 
 Ajude alunos iniciantes com dicas práticas de violão, acordes, batidas e técnica. 
 Use emojis 🎸 quando apropriado e mantenha respostas curtas (máximo 2-3 parágrafos).`
-      },
-      ...(history?.reverse().map(m => ({
-        role: m.role === 'assistant' ? 'assistant' : 'user',
-        content: m.content
-      })) || []),
-      { role: 'user', content: message }
+      }
     ]
 
-    // Chamar Groq (modelo Llama 3 - gratuito e ultra-rápido)
+    // Adicionar histórico
+    if (history) {
+      history.reverse().forEach(m => {
+        messages.push({
+          role: m.role === 'assistant' ? 'assistant' : 'user',
+          content: m.content
+        })
+      })
+    }
+
+    // Adicionar mensagem atual
+    messages.push({ role: 'user', content: message })
+
+    // Chamar Groq
     const chatCompletion = await groq.chat.completions.create({
       messages,
       model: 'llama3-8b-8192',
@@ -53,7 +59,6 @@ Use emojis 🎸 quando apropriado e mantenha respostas curtas (máximo 2-3 pará
 
     const fullResponse = chatCompletion.choices[0]?.message?.content || 'Desculpe, não consegui responder.'
 
-    // Salvar no Supabase
     await supabase.from('chat_messages').insert([
       { user_id: userId, content: message, role: 'user' },
       { user_id: userId, content: fullResponse, role: 'assistant' }
