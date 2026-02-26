@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Groq from 'groq-sdk'
 import { createClient } from '@supabase/supabase-js'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY
+})
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,27 +28,30 @@ export async function POST(req: NextRequest) {
       .order('created_at', { ascending: false })
       .limit(5)
 
-    // Configurar modelo (ele escolhe o melhor disponível)
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-flash',
-      systemInstruction: `Você é um professor de violão experiente, paciente e encourajador. 
+    // Montar mensagens
+    const messages = [
+      {
+        role: 'system',
+        content: `Você é um professor de violão experiente, paciente e encourajador chamado "Professor Virtual". 
 Ajude alunos iniciantes com dicas práticas de violão, acordes, batidas e técnica. 
 Use emojis 🎸 quando apropriado e mantenha respostas curtas (máximo 2-3 parágrafos).`
+      },
+      ...(history?.reverse().map(m => ({
+        role: m.role === 'assistant' ? 'assistant' : 'user',
+        content: m.content
+      })) || []),
+      { role: 'user', content: message }
+    ]
+
+    // Chamar Groq (modelo Llama 3 - gratuito e ultra-rápido)
+    const chatCompletion = await groq.chat.completions.create({
+      messages,
+      model: 'llama3-8b-8192',
+      temperature: 0.7,
+      max_tokens: 800
     })
 
-    // Montar conversa
-    const chat = model.startChat({
-      history: [
-        ...(history?.reverse().map(m => ({
-          role: m.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: m.content }]
-        })) || []),
-      ]
-    })
-
-    // Gerar resposta
-    const result = await chat.sendMessage(message)
-    const fullResponse = result.response.text()
+    const fullResponse = chatCompletion.choices[0]?.message?.content || 'Desculpe, não consegui responder.'
 
     // Salvar no Supabase
     await supabase.from('chat_messages').insert([
