@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Send, Bot, User, Loader2, MessageCircle } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 interface Message {
   id: string
@@ -22,7 +22,6 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
   const [loading, setLoading] = useState(false)
   const [streamingContent, setStreamingContent] = useState('')
   const [isOpen, setIsOpen] = useState(false)
-  const supabase = createClientComponentClient()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Carregar mensagens ao abrir

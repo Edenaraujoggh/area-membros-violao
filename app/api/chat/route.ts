@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@supabase/supabase-js'
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,8 +10,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Mensagem ou usuário faltando' }, { status: 400 })
     }
 
-    // Client do Supabase
-    const supabase = createRouteHandlerClient({ cookies })
+    // Client Supabase direto (server-side)
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
 
     // Buscar histórico (últimas 5 mensagens para contexto)
     const { data: history } = await supabase
