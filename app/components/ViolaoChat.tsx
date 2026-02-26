@@ -204,11 +204,11 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
               {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
             </div>
             
-            <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
-              msg.role === 'user'
-                ? 'bg-amber-500 text-white rounded-br-none'
-                : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
-            }`}>
+            <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm shadow-md ${
+  msg.role === 'user'
+    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-br-none border border-amber-600'
+    : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none'
+}`}>
               <p className="whitespace-pre-wrap">{msg.content}</p>
             </div>
           </div>
