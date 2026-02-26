@@ -1,4 +1,5 @@
 'use client'
+import ViolaoChat from '@/app/components/ViolaoChat'
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules'
 import { Trophy, Crown, Star, Award, BookOpen, Settings, LogOut, ChevronLeft, ChevronRight, Play } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -520,6 +521,9 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         {mostrarAfinador && <Afinador onClose={() => setMostrarAfinador(false)} />}
         {mostrarMetronomo && <Metronomo onClose={() => setMostrarMetronomo(false)} />}         
       </main>
+        {/* Chat com IA - Professor Virtual */}
+      {user && <ViolaoChat userId={user.id} userName={user.email?.split('@')[0]} />}
     </div>
   )
 }
+  
