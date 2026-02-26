@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Groq from 'groq-sdk'
 import { createClient } from '@supabase/supabase-js'
-
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY
-})
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,6 +14,7 @@ export async function POST(req: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
+    // Buscar histórico
     const { data: history } = await supabase
       .from('chat_messages')
       .select('role, content')
@@ -26,39 +22,45 @@ export async function POST(req: NextRequest) {
       .order('created_at', { ascending: false })
       .limit(5)
 
-    // Montar mensagens com tipagem correta
-    const messages: Array<{role: 'system' | 'user' | 'assistant', content: string}> = [
+    // Montar mensagens no formato do Groq
+    const messages = [
       {
         role: 'system',
-        content: `Você é um professor de violão experiente, paciente e encourajador chamado "Professor Virtual". 
-Ajude alunos iniciantes com dicas práticas de violão, acordes, batidas e técnica. 
-Use emojis 🎸 quando apropriado e mantenha respostas curtas (máximo 2-3 parágrafos).`
-      }
+        content: `Você é um professor de violão experiente chamado "Professor Virtual". 
+Ajude alunos iniciantes com dicas práticas. Use emojis 🎸. Respostas curtas.`
+      },
+      ...(history?.reverse().map(m => ({
+        role: m.role === 'assistant' ? 'assistant' : 'user',
+        content: m.content
+      })) || []),
+      { role: 'user', content: message }
     ]
 
-    // Adicionar histórico
-    if (history) {
-      history.reverse().forEach(m => {
-        messages.push({
-          role: m.role === 'assistant' ? 'assistant' : 'user',
-          content: m.content
-        })
+    // Chamar Groq via fetch direto (sem SDK!)
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama3-8b-8192',
+        messages,
+        temperature: 0.7,
+        max_tokens: 800
       })
-    }
-
-    // Adicionar mensagem atual
-    messages.push({ role: 'user', content: message })
-
-    // Chamar Groq
-    const chatCompletion = await groq.chat.completions.create({
-      messages,
-      model: 'llama3-8b-8192',
-      temperature: 0.7,
-      max_tokens: 800
     })
 
-    const fullResponse = chatCompletion.choices[0]?.message?.content || 'Desculpe, não consegui responder.'
+    if (!response.ok) {
+      const error = await response.text()
+      console.error('Groq error:', error)
+      return NextResponse.json({ error: 'Erro na IA' }, { status: 500 })
+    }
 
+    const data = await response.json()
+    const fullResponse = data.choices[0]?.message?.content || 'Desculpe, não entendi.'
+
+    // Salvar no Supabase
     await supabase.from('chat_messages').insert([
       { user_id: userId, content: message, role: 'user' },
       { user_id: userId, content: fullResponse, role: 'assistant' }
@@ -68,6 +70,6 @@ Use emojis 🎸 quando apropriado e mantenha respostas curtas (máximo 2-3 pará
 
   } catch (error) {
     console.error('Chat error:', error)
-    return NextResponse.json({ error: 'Erro ao processar mensagem' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
   }
 }
