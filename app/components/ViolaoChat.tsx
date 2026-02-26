@@ -207,7 +207,7 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
             <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm shadow-md ${
   msg.role === 'user'
     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-br-none border border-amber-600'
-    : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none'
+    : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
 }`}>
               <p className="whitespace-pre-wrap">{msg.content}</p>
             </div>
@@ -248,7 +248,8 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Digite sua dúvida..."
-            className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+            className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 
+            focus:ring-amber-500 text-gray-900 placeholder:text-gray-400"
             disabled={loading}
           />
           <button
