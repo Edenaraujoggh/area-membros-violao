@@ -32,19 +32,19 @@ Ajude alunos iniciantes com dicas práticas. Use emojis 🎸. Respostas curtas.`
       ...(history ? history.reverse().map(m => ({
         role: m.role === 'assistant' ? 'assistant' : 'user',
         content: m.content
-      })) : []),  // <-- CORRIGIDO: era "|| [])" agora é ": [])"
+      })) : []),
       { role: 'user', content: message }
     ]
 
-    // Chamar Groq via fetch direto (sem SDK!)
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {  // <-- CORRIGIDO: removido espaço no final
+    // Chamar Groq via fetch direto
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama3-8b-8192',
+        model: 'llama-3.1-8b-instant',  // <-- TROCADO: era llama3-8b-8192 (descontinuado)
         messages,
         temperature: 0.7,
         max_tokens: 800
