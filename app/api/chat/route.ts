@@ -37,7 +37,7 @@ Ajude alunos iniciantes com dicas práticas. Use emojis 🎸. Respostas curtas.`
     ]
 
     // Chamar Groq via fetch direto
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
