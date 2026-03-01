@@ -20,7 +20,6 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [streamingContent, setStreamingContent] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -35,7 +34,7 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
   // Scroll automático
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, streamingContent])
+  }, [messages])
 
   const loadMessages = async () => {
     const { data } = await supabase
@@ -81,9 +80,8 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
     const userMessage = input.trim()
     setInput('')
     setLoading(true)
-    setStreamingContent('')
 
-    // Mensagem temporária
+    // Mensagem temporária do usuário
     const tempId = 'temp-' + Date.now()
     const tempUserMsg: Message = {
       id: tempId,
@@ -100,27 +98,35 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
         body: JSON.stringify({ message: userMessage, userId })
       })
 
-      if (!response.body) throw new Error('Sem resposta')
-
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-      let fullResponse = ''
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        
-        const chunk = decoder.decode(value)
-        fullResponse += chunk
-        setStreamingContent(fullResponse)
+      if (!response.ok) {
+        throw new Error('Erro na resposta da API')
       }
+
+      // Lê a resposta JSON (não streaming)
+      const data = await response.json()
+      
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      const assistantMessage = data.response
+
+      // Adiciona mensagem do assistente
+      const assistantMsg: Message = {
+        id: 'assistant-' + Date.now(),
+        content: assistantMessage,
+        role: 'assistant',
+        created_at: new Date().toISOString()
+      }
+      
+      setMessages(prev => [...prev, assistantMsg])
 
     } catch (error) {
       console.error('Erro:', error)
+      // Remove mensagem temporária em caso de erro
       setMessages(prev => prev.filter(m => m.id !== tempId))
     } finally {
       setLoading(false)
-      setStreamingContent('')
     }
   }
 
@@ -166,7 +172,7 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
-        {messages.length === 0 && !streamingContent && (
+        {messages.length === 0 && (
           <div className="text-center text-gray-500 mt-8 space-y-4">
             <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto">
               <Bot className="w-8 h-8 text-amber-600" />
@@ -205,28 +211,16 @@ export default function ViolaoChat({ userId, userName }: ViolaoChatProps) {
             </div>
             
             <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm shadow-md ${
-  msg.role === 'user'
-    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-br-none border border-amber-600'
-    : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
-}`}>
+              msg.role === 'user'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-br-none border border-amber-600'
+                : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
+            }`}>
               <p className="whitespace-pre-wrap">{msg.content}</p>
             </div>
           </div>
         ))}
 
-        {streamingContent && (
-          <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
-              <Bot size={16} />
-            </div>
-            <div className="max-w-[80%] rounded-2xl px-4 py-2.5 bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm text-sm">
-              <p className="whitespace-pre-wrap">{streamingContent}</p>
-              <span className="inline-block w-2 h-4 bg-blue-500 animate-pulse ml-0.5" />
-            </div>
-          </div>
-        )}
-
-        {loading && !streamingContent && (
+        {loading && (
           <div className="flex gap-3">
             <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
               <Bot size={16} />
