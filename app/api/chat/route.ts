@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         content: `Você é um professor de violão experiente chamado "Professor Virtual". 
 Ajude alunos iniciantes com dicas práticas. Use emojis 🎸. Respostas curtas.`
       },
-      ...(history?.reverse().map(m => ({
+      ...(history ? history.reverse().map(m => ({
         role: m.role === 'assistant' ? 'assistant' : 'user',
         content: m.content
       })) || []),
