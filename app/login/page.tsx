@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { Mail, Lock, ArrowRight, Loader2, Music, Guitar, ArrowLeft, CheckCircle } from 'lucide-react'
+import { Mail, Lock, ArrowRight, Loader2, Music, Guitar, ArrowLeft, CheckCircle, Eye, EyeOff } from 'lucide-react'
 import Image from 'next/image'
 
 export default function LoginPage() {
@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [modoCadastro, setModoCadastro] = useState(false)
   const [modoRecuperacao, setModoRecuperacao] = useState(false)
   const [mensagemSucesso, setMensagemSucesso] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -230,35 +231,42 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* CAMPO SENHA COM LINK DE RECUPERAÇÃO */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-300">
-                    Senha
-                  </label>
-                  {!modoCadastro && (
-                    <button
-                      type="button"
-                      onClick={() => setModoRecuperacao(true)}
-                      className="text-xs text-amber-500 hover:text-amber-400 transition-colors"
-                    >
-                      Esqueceu a senha?
-                    </button>
-                  )}
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                  <input
-                    type="password"
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    required
-                    minLength={6}
-                    className="w-full bg-gray-900/50 border border-gray-600 rounded-xl py-3.5 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
-                    placeholder="••••••"
-                  />
-                </div>
-              </div>
+          {/* CAMPO SENHA COM LINK DE RECUPERAÇÃO E OLHINHO */}
+<div>
+  <div className="flex items-center justify-between mb-2">
+    <label className="block text-sm font-medium text-gray-300">
+      Senha
+    </label>
+    {!modoCadastro && (
+      <button
+        type="button"
+        onClick={() => setModoRecuperacao(true)}
+        className="text-xs text-amber-500 hover:text-amber-400 transition-colors"
+      >
+        Esqueceu a senha?
+      </button>
+    )}
+  </div>
+  <div className="relative">
+    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+    <input
+      type={showPassword ? "text" : "password"}
+      value={senha}
+      onChange={(e) => setSenha(e.target.value)}
+      required
+      minLength={6}
+      className="w-full bg-gray-900/50 border border-gray-600 rounded-xl py-3.5 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
+      placeholder="••••••"
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-amber-500 transition-colors"
+    >
+      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+    </button>
+  </div>
+</div>
 
               <button
                 type="submit"
