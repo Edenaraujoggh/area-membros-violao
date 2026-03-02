@@ -82,10 +82,11 @@ export default function SuportePage() {
         ) : (
           <div className="space-y-4">
             {aulas.map((aula, index) => (
-              <div 
-                key={aula.id}
-                className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-orange-500 transition cursor-pointer"
-              >
+             <div 
+  key={aula.id}
+  onClick={() => router.push(`/suporte/aula/${aula.id}`)}
+  className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-orange-500 transition cursor-pointer group"
+>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center">
                     <Play className="w-5 h-5" />

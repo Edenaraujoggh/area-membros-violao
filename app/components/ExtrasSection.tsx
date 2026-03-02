@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Headphones, Play } from 'lucide-react';
+import { Headphones, Play, Settings } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -18,23 +18,37 @@ export default function ExtrasSection() {
   const router = useRouter();
   const [extras, setExtras] = useState<Extra[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     fetchExtras();
+    checkAdmin();
   }, []);
 
   const fetchExtras = async () => {
-      console.log('🔍 Buscando extras no Supabase...'); // ADICIONA ISSO
     const { data, error } = await supabase
       .from('extras')
       .select('*')
-      .eq('type', 'support')
       .order('order_num', { ascending: true });
-        console.log('📦 Dados retornados:', data); // ADICIONA ISSO
-  console.log('❌ Erro:', error); // ADICIONA ISSO
 
     if (data) setExtras(data);
     setLoading(false);
+  };
+
+  // Verifica se usuário é admin
+  const checkAdmin = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      const { data: userData } = await supabase
+        .from('usuarios')
+        .select('tipo')
+        .eq('email', session.user.email)
+        .single();
+      
+      if (userData?.tipo === 'admin' || session.user.email === 'musicainfor34@gmail.com') {
+        setIsAdmin(true);
+      }
+    }
   };
 
   if (loading) {
@@ -49,7 +63,19 @@ export default function ExtrasSection() {
     );
   }
 
-  if (extras.length === 0) return null;
+  if (extras.length === 0) {
+    return (
+      <section className="mt-12">
+        <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+          <Headphones className="w-6 h-6 text-orange-500" />
+          Aulas de Suporte
+        </h2>
+        <div className="text-gray-400 bg-gray-800 p-4 rounded-xl">
+          Nenhum curso de suporte cadastrado ainda.
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="mt-12 mb-12">
@@ -64,11 +90,13 @@ export default function ExtrasSection() {
         {extras.map((extra) => (
           <div
             key={extra.id}
-            onClick={() => router.push(`/suporte/${extra.id}`)}
-            className="group bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-orange-500 transition-all duration-300 hover:transform hover:-translate-y-1 cursor-pointer"
+            className="group bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-orange-500 transition-all duration-300 hover:transform hover:-translate-y-1"
           >
-            {/* Thumbnail */}
-            <div className="relative h-48 overflow-hidden">
+            {/* Thumbnail - clicável para ver aulas */}
+            <div 
+              onClick={() => router.push(`/suporte/${extra.id}`)}
+              className="relative h-48 overflow-hidden cursor-pointer"
+            >
               {extra.thumbnail_url ? (
                 <Image
                   src={extra.thumbnail_url}
@@ -100,13 +128,31 @@ export default function ExtrasSection() {
               <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-400 transition">
                 {extra.title}
               </h3>
-              <p className="text-gray-400 text-sm line-clamp-2">
+              <p className="text-gray-400 text-sm line-clamp-2 mb-4">
                 {extra.description}
               </p>
               
-              <button className="w-full mt-4 bg-orange-600 hover:bg-orange-500 text-white font-medium py-2 rounded-lg transition-colors">
+              {/* Botão Ver aulas */}
+              <button 
+                onClick={() => router.push(`/suporte/${extra.id}`)}
+                className="w-full bg-orange-600 hover:bg-orange-500 text-white font-medium py-2 rounded-lg transition-colors"
+              >
                 Ver aulas
               </button>
+
+              {/* Botão Gerenciar aulas - SÓ APARECE SE FOR ADMIN */}
+              {isAdmin && (
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(`/admin/suporte/${extra.id}`);
+                  }}
+                  className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  <Settings className="w-4 h-4" />
+                  Gerenciar aulas
+                </button>
+              )}
             </div>
           </div>
         ))}
