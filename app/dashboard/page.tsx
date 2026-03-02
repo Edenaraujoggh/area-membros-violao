@@ -11,7 +11,7 @@ import 'swiper/css'
 import Metronomo from '@/app/components/Metronomo'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-
+import ExtrasSection from '../components/ExtrasSection' // 👈 IMPORT ADICIONADO AQUI
 
 interface Curso {
   id: string
@@ -233,7 +233,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/fff.jpg" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/fff.jpg " alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                           
 <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
   <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
@@ -272,7 +272,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-gray-400 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Jonivon.png" alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Jonivon.png " alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                           <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
   <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
 </div>
@@ -307,7 +307,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-amber-700 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png" alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png " alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                           <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
   <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
 </div>
@@ -385,7 +385,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {/* Dicionário */}
           <a 
-            href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo"
+            href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo "
             target="_blank"
             rel="noopener noreferrer"
             className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-5 rounded-xl transition-all flex items-center gap-4 group"
@@ -517,6 +517,11 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
             </Swiper>
           )}
         </div>
+
+        {/* 👇 SEÇÃO NOVA: EXTRAS & SUPORTE (TOTALMENTE SEPARADA) */}
+        <section className="mb-8">
+          <ExtrasSection />
+        </section>
               
         {mostrarAfinador && <Afinador onClose={() => setMostrarAfinador(false)} />}
         {mostrarMetronomo && <Metronomo onClose={() => setMostrarMetronomo(false)} />}         
@@ -526,4 +531,3 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
     </div>
   )
 }
-  
