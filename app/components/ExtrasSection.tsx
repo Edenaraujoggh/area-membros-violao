@@ -24,11 +24,14 @@ export default function ExtrasSection() {
   }, []);
 
   const fetchExtras = async () => {
+      console.log('🔍 Buscando extras no Supabase...'); // ADICIONA ISSO
     const { data, error } = await supabase
       .from('extras')
       .select('*')
       .eq('type', 'support')
       .order('order_num', { ascending: true });
+        console.log('📦 Dados retornados:', data); // ADICIONA ISSO
+  console.log('❌ Erro:', error); // ADICIONA ISSO
 
     if (data) setExtras(data);
     setLoading(false);
