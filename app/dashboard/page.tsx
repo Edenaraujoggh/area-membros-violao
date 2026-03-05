@@ -11,7 +11,7 @@ import 'swiper/css'
 import Metronomo from '@/app/components/Metronomo'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import ExtrasSection from '../components/ExtrasSection' // 👈 IMPORT ADICIONADO AQUI
+import ExtrasSection from '../components/ExtrasSection'
 
 interface Curso {
   id: string
@@ -34,15 +34,16 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [progressosCursos, setProgressosCursos] = useState<Record<string, number>>({})
   const [mostrarAfinador, setMostrarAfinador] = useState(false)
-const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
-  // ✅ MOVAR PARA CÁ: Lógica do curso em andamento (disponível para todo o componente)
+  const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
+  const [touchedCard, setTouchedCard] = useState<string | null>(null)
+  
   const cursoEmAndamento = cursos.length > 0 
-  ? cursos.reduce((prev, current) => {
-      const prevProgress = progressosCursos[prev.id] || 0
-      const currProgress = progressosCursos[current.id] || 0
-      return currProgress > prevProgress ? current : prev
-    })
-  : null
+    ? cursos.reduce((prev, current) => {
+        const prevProgress = progressosCursos[prev.id] || 0
+        const currProgress = progressosCursos[current.id] || 0
+        return currProgress > prevProgress ? current : prev
+      })
+    : null
   const progressoAtual = cursoEmAndamento ? (progressosCursos[cursoEmAndamento.id] || 0) : 0
 
   useEffect(() => {
@@ -59,8 +60,6 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         return
       }
 
-      console.log('🔍 Session encontrada:', session.user.email)
-
       const { data: userData, error: userError } = await supabase
         .from('usuarios')
         .select('*')
@@ -74,10 +73,8 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
       }
 
       if (userData) {
-        console.log('✅ Usuário encontrado:', userData)
         setUser(userData)
       } else {
-        console.log('❌ Usuário não encontrado para:', session.user.email)
         setUser({
           id: session.user.id,
           email: session.user.email || '',
@@ -140,8 +137,6 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
       if (data && data.length > 0) {
         await fetchProgressosCursos(data.map((c: Curso) => c.id))
       }
-      console.log('Cursos do banco:', data)
-    
     } catch (error) {
       console.error('Erro:', error)
     } finally {
@@ -155,6 +150,12 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
   }
 
   const isAdmin = user?.tipo === 'admin' || user?.email === 'musicainfor34@gmail.com'
+
+  // Handler para touch no mobile
+  const handleTouch = (cursoId: string) => {
+    setTouchedCard(cursoId)
+    setTimeout(() => setTouchedCard(null), 2000) // Remove o efeito após 2 segundos
+  }
 
   if (loading) {
     return (
@@ -203,13 +204,12 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         </div>
       </header>
 
-                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Linha 1: Ranking Automático (Esquerda) + Continue de onde parou (Direita) */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
           
           {/* 🏆 Coluna Esquerda: Carrossel Automático do Ranking (Ouro/Prata/Bronze) */}
-                    
           <div className="lg:col-span-1">
             <div className="bg-gray-800 border border-gray-700 rounded-xl p-1 h-[160px] relative overflow-hidden">
               <Swiper
@@ -233,13 +233,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/fff.jpg " alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                          
-<div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
-  <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-</div>
-
-
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/fff.jpg" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                         </div>
                         <div className="absolute -bottom-1 -right-2 bg-yellow-500 rounded-full p-1 shadow-lg animate-bounce">
                           <Trophy className="w-3 h-3 text-gray-900" fill="currentColor" />
@@ -250,8 +244,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                         <div className="text-yellow-400 text-[10px] font-bold flex items-center gap-1 mb-0.5">
                           <Crown className="w-3 h-3" fill="currentColor" /> OURO
                         </div>
-                        <p className="text-white font-bold text-sm truncate leading-tight">João Caipira
-</p>
+                        <p className="text-white font-bold text-sm truncate leading-tight">João Caipira</p>
                         <p className="text-yellow-500/80 text-xs">52 horas</p>
                       </div>
                     </div>
@@ -272,10 +265,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-gray-400 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Jonivon.png " alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                          <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
-  <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-</div>
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Jonivon.png" alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                         </div>
                         <div className="absolute -bottom-1 -right-2 bg-gray-400 rounded-full p-1 shadow-lg">
                           <Award className="w-3 h-3 text-gray-900" fill="currentColor" />
@@ -307,10 +297,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-amber-700 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png " alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-                          <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
-  <img src="..." alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
-</div>
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png" alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                         </div>
                         <div className="absolute -bottom-1 -right-2 bg-amber-700 rounded-full p-1 shadow-lg">
                           <Award className="w-3 h-3 text-gray-900" fill="currentColor" />
@@ -321,8 +308,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                         <div className="text-amber-600 text-[10px] font-bold flex items-center gap-1 mb-0.5">
                           <Award className="w-3 h-3" fill="currentColor" /> BRONZE
                         </div>
-                        <p className="text-white font-bold text-sm truncate leading-tight">Thiago Consoli
-</p>
+                        <p className="text-white font-bold text-sm truncate leading-tight">Thiago Consoli</p>
                         <p className="text-amber-600/80 text-xs">45 horas</p>
                       </div>
                     </div>
@@ -341,9 +327,8 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
                 <div className="w-1.5 h-1.5 rounded-full bg-amber-700"></div>
               </div>
             </div>
-            </div>
+          </div>
                      
-               
           {/* ▶️ Coluna Direita: Continue de onde parou (ocupa o resto) */}
           <div className="lg:col-span-3">
             <button 
@@ -385,7 +370,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {/* Dicionário */}
           <a 
-            href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo "
+            href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-5 rounded-xl transition-all flex items-center gap-4 group"
@@ -432,7 +417,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
           </button>
         </div>
 
-        {/* Linha 3: Cursos */}
+        {/* Linha 3: Cursos - ESTILO NETFLIX COM GLOW DEGRADÊ */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold">Seus Cursos</h3>
@@ -454,7 +439,7 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
           ) : (
             <Swiper
               modules={[Navigation, Pagination, Autoplay]}
-              spaceBetween={20}
+              spaceBetween={16}
               slidesPerView={1}
               navigation={{
                 prevEl: '.swiper-button-prev-custom',
@@ -463,53 +448,102 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
               pagination={{ clickable: true, dynamicBullets: true }}
               autoplay={{ delay: 5000, disableOnInteraction: false }}
               breakpoints={{
-                640: { slidesPerView: 1 },
-                768: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 },
+                640: { slidesPerView: 2, spaceBetween: 16 },
+                768: { slidesPerView: 3, spaceBetween: 16 },
+                1024: { slidesPerView: 4, spaceBetween: 20 },
+                1280: { slidesPerView: 4, spaceBetween: 24 },
               }}
               className="!pb-12"
             >
               {cursos.map((curso) => (
                 <SwiperSlide key={curso.id}>
                   <div 
-                    className="group bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-orange-500 transition-all cursor-pointer h-full"
+                    className={`group relative rounded-xl overflow-hidden cursor-pointer h-full transition-all duration-500 hover:scale-[1.03] ${
+                      touchedCard === curso.id ? 'scale-[1.03]' : ''
+                    }`}
                     onClick={() => router.push(`/cursos/${curso.id}`)}
+                    onTouchStart={() => handleTouch(curso.id)}
                   >
-                    <div className="h-48 overflow-hidden relative">
-                      {curso.imagem_url ? (
-                        <img src={curso.imagem_url} alt={curso.titulo} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                      ) : (
-                        <div className="h-full bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center">
-                          <BookOpen className="w-16 h-16 text-white/30" />
-                        </div>
-                      )}
+                    {/* BORDA COM DEGRADÊ ANIMADO - aparece no hover/touch */}
+                    <div className={`absolute -inset-[2px] bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 rounded-xl opacity-0 blur-sm transition-all duration-500 group-hover:opacity-100 group-hover:blur-md group-hover:animate-pulse ${
+                      touchedCard === curso.id ? 'opacity-100 blur-md animate-pulse' : ''
+                    }`}></div>
+                    
+                    {/* Borda sólida degradê rotativo no hover */}
+                    <div className={`absolute -inset-[1px] rounded-xl bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+                      touchedCard === curso.id ? 'opacity-100' : ''
+                    }`}>
+                      <div className="absolute inset-[1px] bg-gray-800 rounded-xl"></div>
                     </div>
-                    <div className="p-6">
-                      <h4 className="text-xl font-bold mb-2 group-hover:text-orange-400 transition-colors">{curso.titulo}</h4>
-                      <div className="mb-4">
-                        <div className="flex justify-between text-sm mb-1">
-                          <span className="text-gray-400">Progresso</span>
-                          <span className="text-orange-500 font-bold">{progressosCursos[curso.id] || 0}%</span>
+
+                    {/* Conteúdo do card */}
+                    <div className="relative bg-gray-800 rounded-xl overflow-hidden border border-gray-700 group-hover:border-transparent transition-colors duration-300 h-full flex flex-col">
+                      {/* Container da imagem com aspect ratio mais vertical (estilo Netflix) */}
+                      <div className="relative aspect-[2/3] overflow-hidden">
+                        {curso.imagem_url ? (
+                          <img 
+                            src={curso.imagem_url} 
+                            alt={curso.titulo} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                          />
+                        ) : (
+                          <div className="h-full bg-gradient-to-br from-orange-600 to-red-700 flex items-center justify-center">
+                            <BookOpen className="w-16 h-16 text-white/30" />
+                          </div>
+                        )}
+                        
+                        {/* Overlay escuro no hover com ícone de play (estilo Netflix) */}
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <div className="w-16 h-16 rounded-full bg-orange-500/90 flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-300 shadow-lg shadow-orange-500/50">
+                            <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
+                          </div>
                         </div>
-                        <div className="w-full bg-gray-700 rounded-full h-2">
-                          <div className="bg-orange-500 h-2 rounded-full" style={{ width: `${progressosCursos[curso.id] || 0}%` }} />
+
+                        {/* Glow no mobile quando toca */}
+                        {touchedCard === curso.id && (
+                          <div className="absolute inset-0 bg-gradient-to-t from-orange-500/30 via-transparent to-purple-500/30 pointer-events-none"></div>
+                        )}
+
+                        {/* Badge de progresso no canto */}
+                        {(progressosCursos[curso.id] || 0) > 0 && (
+                          <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-md border border-white/10">
+                            <span className="text-orange-400 text-xs font-bold">{progressosCursos[curso.id]}%</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Conteúdo do card - mais compacto */}
+                      <div className="p-4 flex-1 flex flex-col">
+                        <h4 className="text-base font-bold mb-1 group-hover:text-orange-400 transition-colors line-clamp-1">{curso.titulo}</h4>
+                        
+                        {/* Barra de progresso minimalista */}
+                        <div className="w-full bg-gray-700 rounded-full h-1.5 mb-3 overflow-hidden">
+                          <div 
+                            className="bg-gradient-to-r from-orange-500 to-red-500 h-full rounded-full transition-all duration-500" 
+                            style={{ width: `${progressosCursos[curso.id] || 0}%` }} 
+                          />
+                        </div>
+
+                        <div className="mt-auto space-y-2">
+                          <button className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium py-2 rounded-md transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/25 relative overflow-hidden group/btn">
+                            <span className="relative z-10">Acessar</span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-500 opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
+                          </button>
+                          
+                          {isAdmin && (
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(`/admin/cursos/${curso.id}/aulas`);
+                              }}
+                              className="w-full bg-blue-600/80 hover:bg-blue-700 text-white text-xs font-medium py-1.5 rounded-md transition-colors flex items-center justify-center gap-1"
+                            >
+                              <Settings className="w-3 h-3" />
+                              Gerenciar
+                            </button>
+                          )}
                         </div>
                       </div>
-                      <button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 rounded-lg transition-colors">
-                        Acessar curso
-                      </button>
-                      {isAdmin && (
-  <button 
-    onClick={(e) => {
-      e.stopPropagation();
-      router.push(`/admin/cursos/${curso.id}/aulas`);
-    }}
-    className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
-  >
-    <Settings className="w-4 h-4" />
-    Gerenciar aulas
-  </button>
-)}
                     </div>
                   </div>
                 </SwiperSlide>
@@ -526,7 +560,8 @@ const [mostrarMetronomo, setMostrarMetronomo] = useState(false)
         {mostrarAfinador && <Afinador onClose={() => setMostrarAfinador(false)} />}
         {mostrarMetronomo && <Metronomo onClose={() => setMostrarMetronomo(false)} />}         
       </main>
-        {/* Chat com IA - Professor Virtual */}
+      
+      {/* Chat com IA - Professor Virtual */}
       {user && <ViolaoChat userId={user.id} userName={user.email?.split('@')[0]} />}
     </div>
   )
