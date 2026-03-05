@@ -447,6 +447,7 @@ export default function Dashboard() {
               pagination={{ clickable: true, dynamicBullets: true }}
               autoplay={{ delay: 5000, disableOnInteraction: false }}
               breakpoints={{
+                 320: { slidesPerView: 2, spaceBetween: 12 },  // 👈 Celular: 2 cards
                 640: { slidesPerView: 2, spaceBetween: 20 },
                 768: { slidesPerView: 3, spaceBetween: 20 },
                 1024: { slidesPerView: 4, spaceBetween: 24 },
@@ -467,7 +468,7 @@ export default function Dashboard() {
                     {/* Conteúdo do card - SEMPRE VISÍVEL */}
                     <div className="relative bg-gray-800 rounded-2xl overflow-hidden border-2 border-gray-700 group-hover:border-transparent transition-colors duration-300 h-full flex flex-col">
                       {/* Container da imagem com aspect ratio mais vertical */}
-                      <div className="relative aspect-[2/3] overflow-hidden">
+                      <div className="relative aspect-[3/4] md:aspect-[2/3] overflow-hidden">
                         {curso.imagem_url ? (
                           <img 
                             src={curso.imagem_url} 
