@@ -458,7 +458,7 @@ export default function Dashboard() {
               {cursos.map((curso) => (
                                   <SwiperSlide key={curso.id} className="!p-2">
                   <div 
-                    className="group relative rounded-2xl cursor-pointer transition-transform duration-500 hover:scale-[1.02] m-[2px]"
+                    className="group relative rounded-xl cursor-pointer transition-transform duration-500 hover:scale-[1.02] m-[2px]"
                     onClick={() => router.push(`/cursos/${curso.id}`)}
                     onTouchStart={() => handleTouch(curso.id)}
                   >
@@ -497,7 +497,7 @@ export default function Dashboard() {
                       </div>
 
                       {/* Conteúdo do card */}
-                      <div className="p-5 flex-1 flex flex-col">
+                      <div className="p-3 flex-1 flex flex-col">
                         <h4 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors line-clamp-1">{curso.titulo}</h4>
                         
                         {/* Barra de progresso */}
