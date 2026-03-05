@@ -498,7 +498,7 @@ export default function Dashboard() {
 
                       {/* Conteúdo do card */}
                       <div className="p-3 flex-1 flex flex-col">
-                        <h4 className="text-xs md:text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors break-words">{curso.titulo}</h4>
+                        
                         
                         {/* Barra de progresso */}
                         <div className="w-full bg-gray-700 rounded-full h-2 mb-4 overflow-hidden">
