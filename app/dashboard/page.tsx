@@ -151,10 +151,9 @@ export default function Dashboard() {
 
   const isAdmin = user?.tipo === 'admin' || user?.email === 'musicainfor34@gmail.com'
 
-  // Handler para touch no mobile
   const handleTouch = (cursoId: string) => {
     setTouchedCard(cursoId)
-    setTimeout(() => setTouchedCard(null), 2000) // Remove o efeito após 2 segundos
+    setTimeout(() => setTouchedCard(null), 2000)
   }
 
   if (loading) {
@@ -417,7 +416,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Linha 3: Cursos - ESTILO NETFLIX COM GLOW DEGRADÊ */}
+        {/* Linha 3: Cursos - ESTILO NETFLIX COM GLOW DEGRADÊ POTENTE */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold">Seus Cursos</h3>
@@ -439,7 +438,7 @@ export default function Dashboard() {
           ) : (
             <Swiper
               modules={[Navigation, Pagination, Autoplay]}
-              spaceBetween={16}
+              spaceBetween={20}
               slidesPerView={1}
               navigation={{
                 prevEl: '.swiper-button-prev-custom',
@@ -448,37 +447,26 @@ export default function Dashboard() {
               pagination={{ clickable: true, dynamicBullets: true }}
               autoplay={{ delay: 5000, disableOnInteraction: false }}
               breakpoints={{
-                640: { slidesPerView: 2, spaceBetween: 16 },
-                768: { slidesPerView: 3, spaceBetween: 16 },
-                1024: { slidesPerView: 4, spaceBetween: 20 },
-                1280: { slidesPerView: 4, spaceBetween: 24 },
+                640: { slidesPerView: 2, spaceBetween: 20 },
+                768: { slidesPerView: 3, spaceBetween: 20 },
+                1024: { slidesPerView: 4, spaceBetween: 24 },
+                1280: { slidesPerView: 4, spaceBetween: 28 },
               }}
               className="!pb-12"
             >
               {cursos.map((curso) => (
-                <SwiperSlide key={curso.id}>
+                                  <SwiperSlide key={curso.id} className="!p-2">
                   <div 
-                    className={`group relative rounded-xl overflow-hidden cursor-pointer h-full transition-all duration-500 hover:scale-[1.03] ${
-                      touchedCard === curso.id ? 'scale-[1.03]' : ''
-                    }`}
+                    className="group relative rounded-2xl cursor-pointer transition-transform duration-500 hover:scale-[1.02] m-[2px]"
                     onClick={() => router.push(`/cursos/${curso.id}`)}
                     onTouchStart={() => handleTouch(curso.id)}
                   >
-                    {/* BORDA COM DEGRADÊ ANIMADO - aparece no hover/touch */}
-                    <div className={`absolute -inset-[2px] bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 rounded-xl opacity-0 blur-sm transition-all duration-500 group-hover:opacity-100 group-hover:blur-md group-hover:animate-pulse ${
-                      touchedCard === curso.id ? 'opacity-100 blur-md animate-pulse' : ''
-                    }`}></div>
+                    {/* BORDA DEGRADÊ - aparece só no hover (menor para não cortar) */}
+                    <div className={`absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:shadow-[0_0_25px_rgba(249,115,22,0.5)] ${touchedCard === curso.id ? 'opacity-100 shadow-[0_0_25px_rgba(249,115,22,0.5)]' : ''}`}></div>
                     
-                    {/* Borda sólida degradê rotativo no hover */}
-                    <div className={`absolute -inset-[1px] rounded-xl bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                      touchedCard === curso.id ? 'opacity-100' : ''
-                    }`}>
-                      <div className="absolute inset-[1px] bg-gray-800 rounded-xl"></div>
-                    </div>
-
-                    {/* Conteúdo do card */}
-                    <div className="relative bg-gray-800 rounded-xl overflow-hidden border border-gray-700 group-hover:border-transparent transition-colors duration-300 h-full flex flex-col">
-                      {/* Container da imagem com aspect ratio mais vertical (estilo Netflix) */}
+                    {/* Conteúdo do card - SEMPRE VISÍVEL */}
+                    <div className="relative bg-gray-800 rounded-2xl overflow-hidden border-2 border-gray-700 group-hover:border-transparent transition-colors duration-300 h-full flex flex-col">
+                      {/* Container da imagem com aspect ratio mais vertical */}
                       <div className="relative aspect-[2/3] overflow-hidden">
                         {curso.imagem_url ? (
                           <img 
@@ -492,32 +480,27 @@ export default function Dashboard() {
                           </div>
                         )}
                         
-                        {/* Overlay escuro no hover com ícone de play (estilo Netflix) */}
+                        {/* Overlay escuro no hover com ícone de play */}
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                          <div className="w-16 h-16 rounded-full bg-orange-500/90 flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-300 shadow-lg shadow-orange-500/50">
+                          <div className="w-16 h-16 rounded-full bg-orange-500 flex items-center justify-center transform scale-50 group-hover:scale-100 transition-transform duration-300 shadow-lg shadow-orange-500/50">
                             <Play className="w-8 h-8 text-white ml-1" fill="currentColor" />
                           </div>
                         </div>
 
-                        {/* Glow no mobile quando toca */}
-                        {touchedCard === curso.id && (
-                          <div className="absolute inset-0 bg-gradient-to-t from-orange-500/30 via-transparent to-purple-500/30 pointer-events-none"></div>
-                        )}
-
                         {/* Badge de progresso no canto */}
                         {(progressosCursos[curso.id] || 0) > 0 && (
-                          <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-md border border-white/10">
+                          <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
                             <span className="text-orange-400 text-xs font-bold">{progressosCursos[curso.id]}%</span>
                           </div>
                         )}
                       </div>
 
-                      {/* Conteúdo do card - mais compacto */}
-                      <div className="p-4 flex-1 flex flex-col">
-                        <h4 className="text-base font-bold mb-1 group-hover:text-orange-400 transition-colors line-clamp-1">{curso.titulo}</h4>
+                      {/* Conteúdo do card */}
+                      <div className="p-5 flex-1 flex flex-col">
+                        <h4 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors line-clamp-1">{curso.titulo}</h4>
                         
-                        {/* Barra de progresso minimalista */}
-                        <div className="w-full bg-gray-700 rounded-full h-1.5 mb-3 overflow-hidden">
+                        {/* Barra de progresso */}
+                        <div className="w-full bg-gray-700 rounded-full h-2 mb-4 overflow-hidden">
                           <div 
                             className="bg-gradient-to-r from-orange-500 to-red-500 h-full rounded-full transition-all duration-500" 
                             style={{ width: `${progressosCursos[curso.id] || 0}%` }} 
@@ -525,9 +508,9 @@ export default function Dashboard() {
                         </div>
 
                         <div className="mt-auto space-y-2">
-                          <button className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium py-2 rounded-md transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/25 relative overflow-hidden group/btn">
-                            <span className="relative z-10">Acessar</span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-500 opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
+                          <button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-lg transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 relative overflow-hidden group/btn">
+                            <span className="relative z-10">Acessar Curso</span>
+                            <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
                           </button>
                           
                           {isAdmin && (
@@ -536,10 +519,10 @@ export default function Dashboard() {
                                 e.stopPropagation();
                                 router.push(`/admin/cursos/${curso.id}/aulas`);
                               }}
-                              className="w-full bg-blue-600/80 hover:bg-blue-700 text-white text-xs font-medium py-1.5 rounded-md transition-colors flex items-center justify-center gap-1"
+                              className="w-full bg-blue-600/80 hover:bg-blue-700 text-white text-xs font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-1 border border-blue-500/30"
                             >
                               <Settings className="w-3 h-3" />
-                              Gerenciar
+                              Gerenciar Aulas
                             </button>
                           )}
                         </div>
