@@ -463,7 +463,7 @@ export default function Dashboard() {
                     onTouchStart={() => handleTouch(curso.id)}
                   >
                     {/* BORDA DEGRADÊ - aparece só no hover (menor para não cortar) */}
-                    <div className={`absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:shadow-[0_0_25px_rgba(249,115,22,0.5)] ${touchedCard === curso.id ? 'opacity-100 shadow-[0_0_25px_rgba(249,115,22,0.5)]' : ''}`}></div>
+                    <div className={`absolute -inset-[2px] rounded-lg bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:shadow-[0_0_25px_rgba(249,115,22,0.5)] ${touchedCard === curso.id ? 'opacity-100 shadow-[0_0_25px_rgba(249,115,22,0.5)]' : ''}`}></div>
                     
                     {/* Conteúdo do card - SEMPRE VISÍVEL */}
                     <div className="relative bg-gray-800 rounded-2xl overflow-hidden border-2 border-gray-700 group-hover:border-transparent transition-colors duration-300 h-full flex flex-col">
@@ -498,7 +498,7 @@ export default function Dashboard() {
 
                       {/* Conteúdo do card */}
                       <div className="p-3 flex-1 flex flex-col">
-                        <h4 className="text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors line-clamp-1">{curso.titulo}</h4>
+                        <h4 className="text-xs md:text-lg font-bold mb-2 group-hover:text-orange-400 transition-colors line-clamp-1">{curso.titulo}</h4>
                         
                         {/* Barra de progresso */}
                         <div className="w-full bg-gray-700 rounded-full h-2 mb-4 overflow-hidden">
