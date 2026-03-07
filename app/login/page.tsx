@@ -4,14 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Mail, Lock, ArrowRight, Loader2, Music, Guitar, ArrowLeft, CheckCircle, Eye, EyeOff } from 'lucide-react'
-import Image from 'next/image'
 
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [loading, setLoading] = useState(false)
-  const [modoCadastro, setModoCadastro] = useState(false)
   const [modoRecuperacao, setModoRecuperacao] = useState(false)
   const [mensagemSucesso, setMensagemSucesso] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -21,23 +19,14 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      if (modoCadastro) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password: senha,
-        })
-        if (error) throw error
-        alert('Cadastro realizado! Verifique seu email.')
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password: senha,
-        })
-        if (error) throw error
-        
-        router.push('/dashboard')
-        router.refresh()
-      }
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password: senha,
+      })
+      if (error) throw error
+      
+      router.push('/dashboard')
+      router.refresh()
     } catch (error: any) {
       alert('Erro: ' + error.message)
     } finally {
@@ -161,19 +150,11 @@ export default function LoginPage() {
     )
   }
 
-  // TELA NORMAL DE LOGIN/CADASTRO
+  // TELA DE LOGIN APENAS (SEM CADASTRO)
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       <div className="relative w-full h-64 md:h-80 overflow-hidden shrink-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-red-700">
-          {/* <Image
-            src="/capa-curso.jpg"
-            alt="Capa do Curso Violão Passo a Passo Minucioso"
-            fill
-            className="object-cover opacity-50 mix-blend-overlay"
-            priority
-          /> */}
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-orange-600 to-red-700" />
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L30 45 M30 5 L40 15 M30 5 L20 15' stroke='white' stroke-width='2' fill='none'/%3E%3Ccircle cx='30' cy='50' r='5' fill='white'/%3E%3C/svg%3E")`,
@@ -206,10 +187,10 @@ export default function LoginPage() {
           <div className="bg-gray-800/80 backdrop-blur-xl border border-gray-700 rounded-3xl p-8 shadow-2xl">
             <div className="text-center mb-6">
               <p className="text-gray-400 text-sm font-medium uppercase tracking-wider mb-1">
-                {modoCadastro ? 'Novo Aluno' : 'Bem-vindo de volta'}
+                Área de Membros
               </p>
               <h3 className="text-xl font-bold text-white">
-                {modoCadastro ? 'Crie sua conta' : 'Acesse suas aulas'}
+                Acesse suas aulas
               </h3>
             </div>
 
@@ -231,42 +212,40 @@ export default function LoginPage() {
                 </div>
               </div>
 
-          {/* CAMPO SENHA COM LINK DE RECUPERAÇÃO E OLHINHO */}
-<div>
-  <div className="flex items-center justify-between mb-2">
-    <label className="block text-sm font-medium text-gray-300">
-      Senha
-    </label>
-    {!modoCadastro && (
-      <button
-        type="button"
-        onClick={() => setModoRecuperacao(true)}
-        className="text-xs text-amber-500 hover:text-amber-400 transition-colors"
-      >
-        Esqueceu a senha?
-      </button>
-    )}
-  </div>
-  <div className="relative">
-    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-    <input
-      type={showPassword ? "text" : "password"}
-      value={senha}
-      onChange={(e) => setSenha(e.target.value)}
-      required
-      minLength={6}
-      className="w-full bg-gray-900/50 border border-gray-600 rounded-xl py-3.5 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
-      placeholder="••••••"
-    />
-    <button
-      type="button"
-      onClick={() => setShowPassword(!showPassword)}
-      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-amber-500 transition-colors"
-    >
-      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-    </button>
-  </div>
-</div>
+              {/* CAMPO SENHA COM LINK DE RECUPERAÇÃO E OLHINHO */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-gray-300">
+                    Senha
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setModoRecuperacao(true)}
+                    className="text-xs text-amber-500 hover:text-amber-400 transition-colors"
+                  >
+                    Esqueceu a senha?
+                  </button>
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    required
+                    minLength={6}
+                    className="w-full bg-gray-900/50 border border-gray-600 rounded-xl py-3.5 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
+                    placeholder="••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-amber-500 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
 
               <button
                 type="submit"
@@ -277,22 +256,20 @@ export default function LoginPage() {
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    {modoCadastro ? 'Criar Conta' : 'Entrar'}
+                    Entrar
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
               </button>
             </form>
 
-            <div className="mt-6 text-center">
-              <button
-                onClick={() => setModoCadastro(!modoCadastro)}
-                className="text-gray-400 hover:text-amber-500 text-sm transition-colors font-medium"
-              >
-                {modoCadastro 
-                  ? 'Já tem conta? Faça login' 
-                  : 'Não tem conta? Cadastre-se'}
-              </button>
+            {/* MENSAGEM DE MATRÍCULA */}
+            <div className="mt-6 p-4 bg-gray-700/50 border border-gray-600 rounded-xl">
+              <p className="text-gray-300 text-sm text-center">
+                <span className="text-amber-400 font-semibold">Ainda não é aluno?</span>
+                <br />
+                Entre em contato com o professor para fazer sua matrícula.
+              </p>
             </div>
 
             <div className="mt-6 flex justify-center gap-3 opacity-30">

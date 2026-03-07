@@ -70,63 +70,43 @@ export default function GerenciarAlunos() {
   }
 
   async function adicionarAluno(e: React.FormEvent) {
-    e.preventDefault()
-    setSalvando(true)
+  e.preventDefault()
+  setSalvando(true)
+  setErro('')
 
-    try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+  try {
+    // Chama a API do servidor (não afeta sua sessão de admin!)
+    const response = await fetch('/api/admin/criar-usuario', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify({
         email,
         password: senha,
-        options: { data: { nome, tipo: 'aluno' } }
+        nome,
+        status
       })
+    })
 
-      if (authError) throw authError
-      if (!authData.user) throw new Error('Erro ao criar usuário')
+    const data = await response.json()
 
-      const { error: userError } = await supabase
-        .from('usuarios')
-        .insert({
-          id: authData.user.id,
-          email,
-          nome,
-          tipo: 'aluno',
-           senha_hash: 'auth_managed',  // ← ADICIONAR ESSA LINHA
-          created_at: new Date().toISOString()
-        })
-
-      if (userError) throw userError
-
-      const expiraEm = status === 'ativo' 
-        ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-        : null
-
-      await supabase.from('assinaturas').insert({
-        user_id: authData.user.id,
-        status,
-        plano: 'mensal',
-        ativado_em: status === 'ativo' ? new Date().toISOString() : null,
-        expira_em: expiraEm
-      })
-
-      alert(`Aluno ${nome} adicionado com sucesso!`)
-      setModalAberto(false)
-      limparFormulario()
-      fetchAlunos()
-
-    } catch (error: any) {
-      console.error('Erro:', error)
-      if (error.message?.includes('violates row-level security')) {
-        alert(`Aluno ${nome} adicionado com sucesso!`)
-        setModalAberto(false)
-        limparFormulario()
-        fetchAlunos()
-      } else {
-        alert('Erro: ' + error.message)
-      }
-    } finally {
-      setSalvando(false)
+    if (!response.ok) {
+      throw new Error(data.error || 'Erro ao criar usuário')
     }
+
+    alert(data.message || `Aluno ${nome} adicionado com sucesso!`)
+    setModalAberto(false)
+    limparFormulario()
+    fetchAlunos()
+
+  } catch (error: any) {
+    console.error('Erro:', error)
+    alert('Erro ao adicionar aluno: ' + error.message)
+  } finally {
+    setSalvando(false)
   }
+}
 
   async function atualizarAluno(e: React.FormEvent) {
     e.preventDefault()

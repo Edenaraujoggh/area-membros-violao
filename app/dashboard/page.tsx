@@ -1,7 +1,8 @@
 'use client'
 import ViolaoChat from '@/app/components/ViolaoChat'
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules'
-import { Trophy, Crown, Star, Award, BookOpen, Settings, LogOut, ChevronLeft, ChevronRight, Play } from 'lucide-react'
+// Adicione Users aqui ↓
+import { Trophy, Crown, Star, Award, BookOpen, Settings, LogOut, ChevronLeft, ChevronRight, Play, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
@@ -183,13 +184,24 @@ export default function Dashboard() {
             </span>
             
             {isAdmin && (
-              <button
-                onClick={() => router.push('/admin')}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg text-sm transition-colors"
-              >
-                <Settings className="w-4 h-4" />
-                <span className="hidden sm:inline">Admin</span>
-              </button>
+              <>
+                {/* 🆕 BOTÃO GERENCIAR ALUNOS */}
+                <button
+                  onClick={() => router.push('/admin/gerenciar-alunos')}
+                  className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-3 py-1.5 rounded-lg text-sm transition-colors"
+                >
+                  <Users className="w-4 h-4" />
+                  <span className="hidden sm:inline">Alunos</span>
+                </button>
+
+                <button
+                  onClick={() => router.push('/admin')}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg text-sm transition-colors"
+                >
+                  <Settings className="w-4 h-4" />
+                  <span className="hidden sm:inline">Admin</span>
+                </button>
+              </>
             )}
             
             <button
@@ -232,7 +244,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-yellow-400 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/fff.jpg" alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/fff.jpg " alt="Ouro" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                         </div>
                         <div className="absolute -bottom-1 -right-2 bg-yellow-500 rounded-full p-1 shadow-lg animate-bounce">
                           <Trophy className="w-3 h-3 text-gray-900" fill="currentColor" />
@@ -264,7 +276,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-gray-400 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Jonivon.png" alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Jonivon.png " alt="Prata" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                         </div>
                         <div className="absolute -bottom-1 -right-2 bg-gray-400 rounded-full p-1 shadow-lg">
                           <Award className="w-3 h-3 text-gray-900" fill="currentColor" />
@@ -296,7 +308,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-3 w-full">
                       <div className="relative shrink-0">
                         <div className="w-14 h-14 rounded-full border-2 border-amber-700 overflow-hidden bg-gray-800 shadow-lg">
-                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png" alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
+                          <img src="https://jynykwoseopmtpqtfenw.supabase.co/storage/v1/object/public/RANKING/Captura%20de%20tela%202026-02-23%20133400.png " alt="Bronze" className="w-full h-full object-cover" onError={(e) => e.currentTarget.style.display='none'} />
                         </div>
                         <div className="absolute -bottom-1 -right-2 bg-amber-700 rounded-full p-1 shadow-lg">
                           <Award className="w-3 h-3 text-gray-900" fill="currentColor" />
@@ -369,7 +381,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {/* Dicionário */}
           <a 
-            href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo"
+            href="https://drive.google.com/uc?export=download&id=1hBnP9pUHKmqMLhS6NcC4HqHsSW8jqSZo "
             target="_blank"
             rel="noopener noreferrer"
             className="bg-gray-800 hover:bg-gray-700 border border-gray-700 p-5 rounded-xl transition-all flex items-center gap-4 group"
