@@ -132,4 +132,36 @@ export default function PlanosPage() {
                   ✅ Acesso a todas as aulas
                 </li>
                 <li className="flex items-center">
-                  ✅ Material
+                  ✅ Material complementar (PDFs)
+                </li>
+                <li className="flex items-center">
+                  ✅ Suporte VIP
+                </li>
+                <li className="flex items-center">
+                  ✅ Certificado de conclusão
+                </li>
+              </ul>
+
+              <button
+                onClick={() => iniciarCheckout(plano.id)}
+                disabled={loading === plano.id}
+                className={`w-full py-3 px-6 rounded-lg font-bold transition-all ${
+                  plano.popular
+                    ? 'bg-white text-amber-600 hover:bg-gray-100 disabled:bg-gray-300'
+                    : 'bg-amber-500 text-white hover:bg-amber-600 disabled:bg-gray-600'
+                } disabled:cursor-not-allowed`}
+              >
+                {loading === plano.id ? 'Processando...' : 'Assinar Agora'}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 text-center text-gray-500 text-sm">
+          <p>Pagamento seguro processado pelo Stripe</p>
+          <p className="mt-2">Cancele a qualquer momento</p>
+        </div>
+      </div>
+    </div>
+  )
+}
