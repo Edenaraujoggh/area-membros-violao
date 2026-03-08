@@ -17,6 +17,7 @@ export async function POST(request: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 
   if (!webhookSecret) {
+    console.error('STRIPE_WEBHOOK_SECRET não configurado')
     return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 })
   }
 
@@ -29,6 +30,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: err.message }, { status: 400 })
   }
 
+  console.log('Evento recebido:', event.type)
+
   // Pagamento aprovado!
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
@@ -38,10 +41,12 @@ export async function POST(request: Request) {
     const customerId = session.customer as string
     const subscriptionId = session.subscription as string
 
-    if (userId) {
-      const { error } = await supabaseAdmin
+    console.log('Dados do pagamento:', { userId, plano, customerId, subscriptionId })
+
+    if (userId && plano) {
+      const { error, data } = await supabaseAdmin
         .from('assinaturas')
-        .upsert({
+        .insert({
           user_id: userId,
           status: 'ativo',
           plano: plano,
@@ -50,12 +55,16 @@ export async function POST(request: Request) {
           ativado_em: new Date().toISOString(),
           expira_em: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         })
+        .select()
 
       if (error) {
-        console.error('Erro ao atualizar assinatura:', error)
+        console.error('Erro ao inserir assinatura:', error)
+        return NextResponse.json({ error: error.message }, { status: 500 })
       } else {
-        console.log('✅ Assinatura ativada:', userId)
+        console.log('✅ Assinatura ativada com sucesso:', data)
       }
+    } else {
+      console.error('Metadata incompleto:', { userId, plano })
     }
   }
 
