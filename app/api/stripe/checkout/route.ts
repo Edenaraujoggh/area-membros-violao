@@ -17,8 +17,8 @@ export async function POST(request: Request) {
 
     const preco = precos[plano] || 4990
 
-    // URL fixa - substitua pela sua URL real
-    const baseUrl = 'https://area-membros-violao.vercel.app'
+    // ✅ Corrigido: URL sem espaço e vindo do env
+    const baseUrl = process.env.NEXT_PUBLIC_URL?.trim() || 'https://area-membros-violao.vercel.app'
 
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
             },
             unit_amount: preco,
             recurring: {
-              interval: plano === 'mensal' ? 'month' : plano === 'trimestral' ? 'month' : 'year',
+              interval: plano === 'anual' ? 'year' : 'month',
               interval_count: plano === 'trimestral' ? 3 : 1
             }
           },
@@ -44,7 +44,8 @@ export async function POST(request: Request) {
       cancel_url: `${baseUrl}/dashboard?canceled=true`,
       metadata: {
         userId: userId,
-        plano: plano
+        plano: plano,
+        email: email // ✅ Adicionado para rastreio
       }
     })
 

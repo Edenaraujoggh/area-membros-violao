@@ -1,28 +1,37 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import { useRouter, useSearchParams } from 'next/navigation'
+import { supabase } from '@/lib/supabase' // USE SEMPRE ESTE IMPORT
 
 export default function PlanosPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState<string | null>(null)
 
+  // ✅ Busca o usuário usando o cliente correto (async/await)
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
-    })
+    }
+    checkUser()
   }, [])
+
+  // Verifica se voltou do login com plano pendente
+  useEffect(() => {
+    const planoPendente = localStorage.getItem('plano_pendente')
+    if (user && planoPendente) {
+      localStorage.removeItem('plano_pendente')
+      iniciarCheckout(planoPendente)
+    }
+  }, [user])
 
   async function iniciarCheckout(plano: string) {
     if (!user) {
-      router.push('/login')
+      localStorage.setItem('plano_pendente', plano)
+      router.push('/login?redirect=/planos')
       return
     }
 
@@ -128,18 +137,10 @@ export default function PlanosPage() {
               </p>
 
               <ul className={`space-y-3 mb-8 text-sm ${plano.popular ? 'text-white' : 'text-gray-300'}`}>
-                <li className="flex items-center">
-                  ✅ Acesso a todas as aulas
-                </li>
-                <li className="flex items-center">
-                  ✅ Material complementar (PDFs)
-                </li>
-                <li className="flex items-center">
-                  ✅ Suporte VIP
-                </li>
-                <li className="flex items-center">
-                  ✅ Certificado de conclusão
-                </li>
+                <li className="flex items-center">✅ Acesso a todas as aulas</li>
+                <li className="flex items-center">✅ Material complementar (PDFs)</li>
+                <li className="flex items-center">✅ Suporte VIP</li>
+                <li className="flex items-center">✅ Certificado de conclusão</li>
               </ul>
 
               <button
